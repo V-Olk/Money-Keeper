@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:VOlkin"
         mc:Ignorable="d"
         Title="Money Keeper" Height="600" Width="450">
-    <TabControl TabStripPlacement="Bottom">
+    <TabControl TabStripPlacement="Bottom" SelectedIndex="1">
 
         <TabControl.Resources>
             <Style TargetType="{x:Type TabPanel}">
@@ -14,10 +14,10 @@
             </Style>
         </TabControl.Resources>
 
-        <TabItem Header="MainInfo">
+        <TabItem Header="Investments">
             
         </TabItem>
-        <TabItem Header="Investments">
+        <TabItem Header="MainInfo">
 
         </TabItem>
         <TabItem Header="Crypto">
