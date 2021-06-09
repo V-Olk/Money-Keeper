@@ -6,7 +6,18 @@
         xmlns:local="clr-namespace:VOlkin"
         mc:Ignorable="d"
         Title="Money Keeper" Height="600" Width="450">
-    <TabControl TabStripPlacement="Bottom" SelectedIndex="1">
+
+    <Window.Resources>
+        <DataTemplate x:Key="CustomerTemplate">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding PaymentTypeName}"/>
+                <TextBlock Text=" "/>
+                <TextBlock Text="{Binding PaymentTypeId}"/>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+
+        <TabControl TabStripPlacement="Bottom" SelectedIndex="1">
 
         <TabControl.Resources>
             <Style TargetType="{x:Type TabPanel}">
@@ -17,9 +28,39 @@
         <TabItem Header="Investments">
             
         </TabItem>
-        <TabItem Header="MainInfo">
+        
+        <TabItem Header="Main Info">
+            <StackPanel>
+                <Expander>
+                    <Expander.Header>
+                        <Button Background="Lavender">Карты</Button>
+                    </Expander.Header>
+                    <StackPanel >
+                        <ItemsControl ItemsSource="{Binding PaymentTypes}">
+                            
+                            <!--<ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>-->
+                            
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Content="{Binding PaymentTypeName}"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <!--<ContentControl 
+                        Content="{Binding PaymentTypes}"
+                        ContentTemplate="{StaticResource CustomerTemplate}" />-->
+                    </StackPanel>
 
+                </Expander>
+                
+                
+            </StackPanel>
         </TabItem>
+        
         <TabItem Header="Crypto">
 
         </TabItem>
