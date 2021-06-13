@@ -77,6 +77,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Dialogs\Service\DialogWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -86,6 +90,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DatabaseContext.cs" />
+    <Compile Include="Dialogs\Service\DialogViewModelBase.cs" />
+    <Compile Include="Dialogs\Service\DialogService.cs" />
+    <Compile Include="Dialogs\Service\DialogWindow.xaml.cs">
+      <DependentUpon>DialogWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Service\IDialogService.cs" />
+    <Compile Include="Dialogs\Service\IDialogWindow.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\PaymentType.cs" />
     <Compile Include="Models\Transaction.cs" />
@@ -123,9 +134,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Dialogs\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
