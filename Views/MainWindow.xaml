@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Money Keeper" Height="600" Width="450">
 
-    <Window.Resources>
+    <!--<Window.Resources>
         <DataTemplate x:Key="CustomerTemplate">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding PaymentTypeName}"/>
@@ -15,7 +15,7 @@
                 <TextBlock Text="{Binding PaymentTypeId}"/>
             </StackPanel>
         </DataTemplate>
-    </Window.Resources>
+    </Window.Resources>-->
 
         <TabControl TabStripPlacement="Bottom" SelectedIndex="1">
 
@@ -33,7 +33,26 @@
             <StackPanel>
                 <Expander>
                     <Expander.Header>
-                        <Button Background="Lavender">Карты</Button>
+                        <Grid  HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="Карты" Grid.Column="0">
+                               
+                            </TextBlock>
+
+                            <TextBlock Text="{Binding TotalMoney, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1">
+
+                            </TextBlock>
+
+                            <Button Grid.Column="2" Command="{Binding AddCardCommand}">
+                            +
+                            </Button>
+
+                        </Grid>
                     </Expander.Header>
                     <StackPanel >
                         <ItemsControl ItemsSource="{Binding PaymentTypes}">
@@ -46,7 +65,18 @@
                             
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Button Content="{Binding PaymentTypeName}"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Text="{Binding PaymentTypeName}" Grid.Column="0"/>
+
+                                        <TextBlock Text="{Binding MoneyAmount}" Grid.Column="1"/>
+                                    </Grid>
+                                    <!--<Button Content="{Binding PaymentTypeName}"/>-->
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

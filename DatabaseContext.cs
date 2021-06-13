@@ -15,8 +15,8 @@ namespace VOlkin
             var sqliteConnectionInitializer = new SqliteCreateDatabaseIfNotExists<DatabaseContext>(modelBuilder);
             Database.SetInitializer(sqliteConnectionInitializer);
         }
-        //public DbSet<Transaction> Transactions { get; set; }
-        //public DbSet<Category> Categories { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Category> Categories { get; set; }
         public DbSet<PaymentType> PaymentTypes { get; set; }
         //public DbSet<Bank> Banks { get; set; }
     }

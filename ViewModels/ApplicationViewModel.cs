@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace VOlkin
 {
@@ -14,17 +15,45 @@ namespace VOlkin
     {
         public DatabaseContext DbContext;
         public ObservableCollection<PaymentType> PaymentTypes { get; set; }
+
+        public decimal TotalMoney { get; set; }
+
         public ApplicationViewModel()
         {
             DbContext = new DatabaseContext();
             DbContext.PaymentTypes.Load();
             PaymentTypes = DbContext.PaymentTypes.Local;
+            TotalMoney = PaymentTypes.Sum(pt => pt.MoneyAmount);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+
+        private RelayCommand _addCardCommand;
+        public RelayCommand AddCardCommand
+        {
+            get
+            {
+                return _addCardCommand ??
+                  (_addCardCommand = new RelayCommand(obj =>
+                  {
+                      PaymentType newPT = new PaymentType()
+                      {
+                          PaymentTypeName = "новый тип оплаты",
+                          MoneyAmount = 1488
+                      };
+
+                      DbContext.PaymentTypes.Add(newPT);
+                      DbContext.SaveChanges();
+                      //MessageBox.Show("sdfklj");
+                      //Phone phone = new Phone();
+                      //Phones.Insert(0, phone);
+                      //SelectedPhone = phone;
+                  }));
+            }
         }
     }
 }
