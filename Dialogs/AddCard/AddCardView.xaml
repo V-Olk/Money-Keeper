@@ -1,0 +1,28 @@
+﻿<UserControl x:Class="VOlkin.Dialogs.AddCard.AddCardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VOlkin.Dialogs.AddCard"
+             mc:Ignorable="d" 
+             Height="125"
+             Width="580">
+    
+    <StackPanel Margin="20">
+        <TextBox Text="{Binding CardNameInput, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Text="{Binding MoneyAmountInput, UpdateSourceTrigger=PropertyChanged}" Margin="0 10"/>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Content="Отмена" Margin="0 10 10 10" Command="{Binding CancelCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
+            <Button Grid.Column="1" Content="Ок" Margin="10 10 0 10" Command="{Binding OKCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
+
+        </Grid>
+    </StackPanel>
+</UserControl>

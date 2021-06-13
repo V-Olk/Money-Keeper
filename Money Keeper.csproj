@@ -77,6 +77,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Dialogs\AddCard\AddCardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\Service\DialogWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -90,6 +94,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DatabaseContext.cs" />
+    <Compile Include="Dialogs\AddCard\AddCardDialogViewModel.cs" />
+    <Compile Include="Dialogs\AddCard\AddCardView.xaml.cs">
+      <DependentUpon>AddCardView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\Service\DialogViewModelBase.cs" />
     <Compile Include="Dialogs\Service\DialogService.cs" />
     <Compile Include="Dialogs\Service\DialogWindow.xaml.cs">
