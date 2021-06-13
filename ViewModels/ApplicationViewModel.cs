@@ -38,22 +38,20 @@ namespace VOlkin
             get
             {
                 return _addCardCommand ??
-                  (_addCardCommand = new RelayCommand(obj =>
-                  {
-                      PaymentType newPT = new PaymentType()
-                      {
-                          PaymentTypeName = "новый тип оплаты",
-                          MoneyAmount = 1488
-                      };
-
-                      DbContext.PaymentTypes.Add(newPT);
-                      DbContext.SaveChanges();
-                      //MessageBox.Show("sdfklj");
-                      //Phone phone = new Phone();
-                      //Phones.Insert(0, phone);
-                      //SelectedPhone = phone;
-                  }));
+                  (_addCardCommand = new RelayCommand(AddCard));
             }
+        }
+
+        private void AddCard()
+        {
+            PaymentType newPT = new PaymentType()
+            {
+                PaymentTypeName = "новый тип оплаты",
+                MoneyAmount = 1488
+            };
+
+            DbContext.PaymentTypes.Add(newPT);
+            DbContext.SaveChanges();
         }
     }
 }
