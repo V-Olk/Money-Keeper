@@ -1,4 +1,4 @@
-﻿<Window x:Class="VOlkin.Dialogs.Service.DialogWindow"
+﻿<controls:MetroWindow  xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls" x:Class="VOlkin.Dialogs.Service.DialogWindow"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -10,4 +10,4 @@
 
     <ContentControl x:Name="ContentPresenter" Content="{Binding}"/>
 
-</Window>
+</controls:MetroWindow>

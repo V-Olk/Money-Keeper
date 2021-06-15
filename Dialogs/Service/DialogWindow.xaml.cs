@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace VOlkin.Dialogs.Service
     /// <summary>
     /// Логика взаимодействия для DialogWindow.xaml
     /// </summary>
-    public partial class DialogWindow : Window, IDialogWindow
+    public partial class DialogWindow : MetroWindow, IDialogWindow
     {
         public DialogWindow()
         {
