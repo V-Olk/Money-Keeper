@@ -6,27 +6,33 @@
         xmlns:views="clr-namespace:VOlkin.Views"
         mc:Ignorable="d"
         BorderThickness="0"
+        Background="{DynamicResource MaterialDesignPaper}"
+        Foreground="{DynamicResource MaterialDesignBody}"
         Title="Money Keeper" Height="600" Width="450">
 
-    <TabControl TabStripPlacement="Bottom" SelectedIndex="1">
-
+    <TabControl TabStripPlacement="Bottom" SelectedIndex="2" Style="{DynamicResource MaterialDesignNavigatilRailTabControl}">
         <TabControl.Resources>
             <Style TargetType="{x:Type TabPanel}">
                 <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
         </TabControl.Resources>
 
-        <TabItem Header="Investments">
-            
+        <TabItem DataContext="{Binding ChildrenViews[0]}" Header="Options">
+            <views:OptionsView/>
         </TabItem>
 
-        <TabItem DataContext="{Binding ChildrenViews[0]}" Header="Main Info">
+        <TabItem DataContext="{Binding ChildrenViews[1]}" Header="Investments">
+            <views:InvestmentsView/>
+        </TabItem>
+
+        <TabItem DataContext="{Binding ChildrenViews[2]}" Header="Main">
             <views:MainInfoView/>
         </TabItem>
 
-        <TabItem DataContext="{Binding ChildrenViews[1]}" Header="Crypto">
+        <TabItem DataContext="{Binding ChildrenViews[3]}" Header="Crypto">
             <views:CryptoView/>
         </TabItem>
 
     </TabControl>
+
 </controls:MetroWindow>
