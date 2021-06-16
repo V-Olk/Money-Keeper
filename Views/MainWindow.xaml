@@ -4,9 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VOlkin"
+        xmlns:viewmodels="clr-namespace:VOlkin.ViewModels"
+        xmlns:views="clr-namespace:VOlkin.Views"
         mc:Ignorable="d"
         BorderThickness="0"
         Title="Money Keeper" Height="600" Width="450">
+
+    <!--<Window.Resources>
+
+    </Window.Resources>-->
 
     <TabControl TabStripPlacement="Bottom" SelectedIndex="1">
 
@@ -14,65 +20,26 @@
             <Style TargetType="{x:Type TabPanel}">
                 <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
+            <!--<DataTemplate x:Name="MainInfoTemplate" DataType="{x:Type viewmodels:MainInfoViewModel}">
+                <views:MainInfoView DataContext="{Binding}"/>
+            </DataTemplate>
+            <DataTemplate x:Name="CryptoTemplate" DataType="{x:Type viewmodels:CryptoViewModel}">
+                <views:CryptoView DataContext="{Binding}"/>
+            </DataTemplate>-->
         </TabControl.Resources>
 
         <TabItem Header="Investments">
             
         </TabItem>
-        
-        <TabItem Header="Main Info">
-            <StackPanel>
-                <Expander>
-                    <Expander.Header>
-                        <Grid  HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
 
-                            <TextBlock Text="Карты" Grid.Column="0" VerticalAlignment="Center">
-                               
-                            </TextBlock>
-
-                            <TextBlock Text="{Binding TotalMoney, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalAlignment="Center">
-
-                            </TextBlock>
-
-                            <Button Grid.Column="2" Command="{Binding AddCardCommand}" Margin="75 0 0 0">
-                            +
-                            </Button>
-
-                        </Grid>
-                    </Expander.Header>
-                    <StackPanel >
-                        <ItemsControl ItemsSource="{Binding PaymentTypes}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <TextBlock Text="{Binding PaymentTypeName}" Grid.Column="0"/>
-
-                                        <TextBlock Text="{Binding MoneyAmount}" Grid.Column="1"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-
-                </Expander>
-                
-                
-            </StackPanel>
+        <TabItem DataContext="{Binding ChildrenViews[0]}" Header="Main Info">
+            <!---->
+            <!--<ContentControl Content="{Binding}"/>-->
+            <views:MainInfoView/>
         </TabItem>
-        
-        <TabItem Header="Crypto">
 
+        <TabItem DataContext="{Binding ChildrenViews[1]}" Header="Crypto">
+            <views:CryptoView/>
         </TabItem>
 
     </TabControl>

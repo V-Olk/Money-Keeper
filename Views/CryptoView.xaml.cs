@@ -1,5 +1,4 @@
-﻿using MahApps.Metro.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,16 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VOlkin.ViewModels;
 
-namespace VOlkin
+namespace VOlkin.Views
 {
-    public partial class MainWindow : MetroWindow
+    /// <summary>
+    /// Interaction logic for CryptoView.xaml
+    /// </summary>
+    public partial class CryptoView : UserControl
     {
-        public MainWindow()
+        public CryptoView()
         {
             InitializeComponent();
-            DataContext = new ApplicationViewModel();
         }
     }
 }
