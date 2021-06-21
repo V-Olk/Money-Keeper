@@ -18,24 +18,19 @@ namespace VOlkin.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        private bool _isDarkThemeOn = new PaletteHelper().GetTheme().GetBaseTheme() == BaseTheme.Dark;
+        private bool _isDarkThemeOn = Properties.Settings.Default.IsDarkThemeOn;//new PaletteHelper().GetTheme().GetBaseTheme() == BaseTheme.Dark;
         public bool IsDarkThemeOn
         {
             get { return _isDarkThemeOn; }
             set
             {
                 _isDarkThemeOn = value;
-                ModifyTheme(value);
+
+                Properties.Settings.Default.IsDarkThemeOn = value;
+                Properties.Settings.Default.Save();
+
+                ThemeModifier.ModifyTheme(value);
             }
-        }
-
-        private void ModifyTheme(bool isDarkTheme)
-        {
-            var paletteHelper = new PaletteHelper();
-            var theme = paletteHelper.GetTheme();
-
-            theme.SetBaseTheme(isDarkTheme ? Theme.Dark : Theme.Light);
-            paletteHelper.SetTheme(theme);
         }
     }
 }

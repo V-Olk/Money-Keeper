@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro.Controls;
+using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,10 @@ namespace VOlkin
         public MainWindow()
         {
             InitializeComponent();
+            ThemeModifier.ModifyTheme(Properties.Settings.Default.IsDarkThemeOn);
             DataContext = new ApplicationViewModel();
         }
+
+
     }
 }
