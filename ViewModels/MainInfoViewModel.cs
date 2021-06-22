@@ -18,7 +18,7 @@ namespace VOlkin.ViewModels
 
         public DatabaseContext DbContext;
         public ObservableCollection<PaymentType> PaymentTypes { get; set; }
-
+        public ObservableCollection<Transaction> Transactions { get; set; }
         public decimal TotalMoney { get; set; }
 
         public MainInfoViewModel()
@@ -26,6 +26,10 @@ namespace VOlkin.ViewModels
             DbContext = new DatabaseContext();
             DbContext.PaymentTypes.Load();
             PaymentTypes = DbContext.PaymentTypes.Local;
+
+            DbContext.Transactions.OrderByDescending(tr => tr.DateTime).Load();//.Where(tr => tr.DateTime > DateTime.Today).Load();
+            Transactions = DbContext.Transactions.Local;
+
             TotalMoney = PaymentTypes.Sum(pt => pt.MoneyAmount);
         }
 
@@ -35,13 +39,12 @@ namespace VOlkin.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
+        #region AddPaymentType
+
         private RelayCommand _addCardCommand;
         public RelayCommand AddCardCommand
         {
-            get
-            {
-                return _addCardCommand ??= new RelayCommand(AddCard);
-            }
+            get { return _addCardCommand ??= new RelayCommand(AddCard); }
         }
 
         private void AddCard()
@@ -65,6 +68,12 @@ namespace VOlkin.ViewModels
 
             DbContext.PaymentTypes.Add(newPT);
             DbContext.SaveChanges();
+
+            ////TODO: it needs to be automated?
+            TotalMoney += moneyAmount;
+            OnPropertyChanged("TotalMoney");
         }
+
+        #endregion
     }
 }
