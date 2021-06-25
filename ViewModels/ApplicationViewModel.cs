@@ -16,7 +16,7 @@ namespace VOlkin
 {
     class ApplicationViewModel : INotifyPropertyChanged
     {
-        private readonly ObservableCollection<object> _childrenViews = new ObservableCollection<object>() { new OptionsViewModel(), new InvestmentsViewModel(), new MainInfoViewModel(), new CryptoViewModel() };
+        private readonly ObservableCollection<object> _childrenViews = new() { new OptionsViewModel(), new InvestmentsViewModel(), new MainInfoViewModel(), new CryptoViewModel() };
         public ObservableCollection<object> ChildrenViews { get { return _childrenViews; } }
 
         public ApplicationViewModel()

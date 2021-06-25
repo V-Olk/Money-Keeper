@@ -12,7 +12,9 @@
         Foreground="{DynamicResource MaterialDesignBody}"
         Title="Money Keeper"
         Height="600"
-        Width="450">
+        Width="500"
+        MinHeight="600"  
+        MinWidth="500">
 
     <TabControl TabStripPlacement="Bottom" SelectedIndex="2" Style="{DynamicResource MahApps.Styles.TabControl.AnimatedSingleRow}">
         <TabControl.Resources>

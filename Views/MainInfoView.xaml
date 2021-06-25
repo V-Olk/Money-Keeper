@@ -58,22 +58,27 @@
 
         </Expander>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
             <TextBlock Text="Доходы и расходы за "
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        FontSize="16"
-                       
                        />
 
-            <ComboBox ItemsSource="{Binding }"/>
+            <ComboBox ItemsSource="{Binding TimePeriods}"
+                      SelectedItem="{Binding SetCurTimePeriod}"
+                      FontSize="16">
+                <ComboBox.Resources>
+                    <Style TargetType="{x:Type ComboBoxItem}">
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                    </Style>
+                </ComboBox.Resources>
+                
+            </ComboBox>
         </StackPanel>
-        <!--SelectedItem="{Binding SelectedServerName}"-->
-
-
 
         <StackPanel >
-            <ItemsControl ItemsSource="{Binding Transactions}">
+            <ItemsControl ItemsSource="{Binding Transactions, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid>

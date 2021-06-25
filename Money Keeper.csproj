@@ -99,6 +99,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="HelpClasses\ChangeTimePeriod.cs" />
     <Compile Include="ThemeModifier.cs" />
     <Compile Include="ViewModels\InvestmentsViewModel.cs" />
     <Compile Include="Views\InvestmentsView.xaml.cs">
