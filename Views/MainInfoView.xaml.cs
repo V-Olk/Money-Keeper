@@ -24,5 +24,10 @@ namespace VOlkin.Views
         {
             InitializeComponent();
         }
+
+        private void ListBoxItem_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            //TODO: Dialog Deleteing/Closing pay method
+        }
     }
 }

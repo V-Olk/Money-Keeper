@@ -11,97 +11,96 @@
              d:DesignHeight="450" d:DesignWidth="800"
              >
 
-    <StackPanel Margin="10">
-        <!--<TextBlock Text="Счета" HorizontalAlignment="Center" Margin="0 10 0 0" FontSize="14"/>-->
-        <Expander>
-            <Expander.Header>
-                <Grid  HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
+    <UserControl.Resources>
+        <DataTemplate x:Key="PaymentTypesTemplate">
+            <Grid HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="Карты" Grid.Column="0" VerticalAlignment="Center">
+                <TextBlock Text="{Binding PaymentTypeName}" Grid.Column="0"/>
 
-                    </TextBlock>
+                <TextBlock Text="{Binding MoneyAmount}" Grid.Column="1"/>
+            </Grid>
+        </DataTemplate>
 
-                    <TextBlock Text="{Binding Path=TotalMoney, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center">
+        <DataTemplate x:Key="TransactionsTemplate">
+            <Grid HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
 
-                    </TextBlock>
+                <TextBlock Text="{Binding Price}" Grid.Column="0"/>
 
-                    <Button Grid.Column="2" Command="{Binding AddCardCommand}" Margin="75 0 0 0">
-                        <materialDesign:PackIcon Kind="CreditCardPlusOutline" />
-                    </Button>
+                <TextBlock Text="{Binding Comment}" Grid.Column="1"/>
 
-                </Grid>
-            </Expander.Header>
-            <StackPanel >
-                <ItemsControl ItemsSource="{Binding PaymentTypes}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding DateTime}" Grid.Column="2"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
 
-                                <TextBlock Text="{Binding PaymentTypeName}" Grid.Column="0"/>
+    <ScrollViewer>
+        <StackPanel Margin="10">
+            <!--<TextBlock Text="Счета" HorizontalAlignment="Center" Margin="0 10 0 0" FontSize="14"/>-->
+            <Expander>
+                <Expander.Header>
+                    <Grid  HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
 
-                                <TextBlock Text="{Binding MoneyAmount}" Grid.Column="1"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
+                        <TextBlock Text="Карты" Grid.Column="0" VerticalAlignment="Center">
 
-        </Expander>
+                        </TextBlock>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
-            <TextBlock Text="Доходы и расходы за "
+                        <TextBlock Text="{Binding Path=TotalMoney}" Grid.Column="1" VerticalAlignment="Center">
+
+                        </TextBlock>
+
+                        <Button Grid.Column="2" Command="{Binding AddCardCommand}" Margin="75 0 0 0">
+                            <materialDesign:PackIcon Kind="CreditCardPlusOutline" />
+                        </Button>
+
+                    </Grid>
+                </Expander.Header>
+
+                <ListBox x:Name="PaymenTypesListBox" ItemsSource="{Binding PaymentTypes}" ItemTemplate="{StaticResource PaymentTypesTemplate}">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                            <EventSetter Event="MouseRightButtonUp" Handler="ListBoxItem_MouseRightButtonUp"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+            </Expander>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
+                <TextBlock Text="Доходы и расходы за "
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        FontSize="16"
                        />
 
-            <ComboBox ItemsSource="{Binding TimePeriods}"
+                <ComboBox ItemsSource="{Binding TimePeriods}"
                       SelectedItem="{Binding SetCurTimePeriod}"
                       FontSize="16">
-                <ComboBox.Resources>
-                    <Style TargetType="{x:Type ComboBoxItem}">
-                        <Setter Property="HorizontalAlignment" Value="Center"/>
-                    </Style>
-                </ComboBox.Resources>
-                
-            </ComboBox>
+                    <ComboBox.Resources>
+                        <Style TargetType="{x:Type ComboBoxItem}">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                        </Style>
+                    </ComboBox.Resources>
+
+                </ComboBox>
+            </StackPanel>
+
+            <ListView ItemsSource="{Binding Transactions}" ItemTemplate="{StaticResource TransactionsTemplate}"/>
+
         </StackPanel>
-
-        <StackPanel >
-            <ItemsControl ItemsSource="{Binding Transactions, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-
-                            <TextBlock Text="{Binding Price}" Grid.Column="0"/>
-
-                            <TextBlock Text="{Binding Comment}" Grid.Column="1"/>
-
-                            <TextBlock Text="{Binding DateTime}" Grid.Column="2"/>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
-
-
-    </StackPanel>
-
-
+    </ScrollViewer>
 
 </UserControl>
