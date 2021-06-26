@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VOlkin.HelpClasses
 {
-    public delegate void Method();
+    public delegate bool Method();
 
     public class ChangeTimePeriod
     {

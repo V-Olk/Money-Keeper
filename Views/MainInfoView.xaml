@@ -87,7 +87,7 @@
                        />
 
                 <ComboBox ItemsSource="{Binding TimePeriods}"
-                      SelectedItem="{Binding SetCurTimePeriod}"
+                      SelectedItem="{Binding SetCurTimePeriod, Delay=10}"
                       FontSize="16">
                     <ComboBox.Resources>
                         <Style TargetType="{x:Type ComboBoxItem}">

@@ -99,6 +99,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dialogs\ReadTwoDates\ReadTwoDatesView.xaml.cs">
+      <DependentUpon>ReadTwoDatesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ReadTwoDates\ReadTwoDatesViewModel.cs" />
     <Compile Include="HelpClasses\ChangeTimePeriod.cs" />
     <Compile Include="ThemeModifier.cs" />
     <Compile Include="ViewModels\InvestmentsViewModel.cs" />
@@ -109,6 +113,10 @@
       <DependentUpon>OptionsView.xaml</DependentUpon>
     </Compile>
     <Page Include="Dialogs\AddCard\AddCardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\ReadTwoDates\ReadTwoDatesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
