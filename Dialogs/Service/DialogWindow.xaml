@@ -6,7 +6,10 @@
       xmlns:local="clr-namespace:VOlkin.Dialogs.Service"
       mc:Ignorable="d" 
       WindowStartupLocation="CenterScreen"
-      Title="{Binding Title}" Height="175" Width="600">
+      Title="{Binding Title}"
+      Height="175"
+      Width="600"
+      ResizeMode="NoResize">
 
     <ContentControl x:Name="ContentPresenter" Content="{Binding}"/>
 

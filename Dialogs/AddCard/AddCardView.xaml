@@ -7,21 +7,62 @@
              mc:Ignorable="d" 
              Height="150"
              Width="580">
-    
+
     <StackPanel Margin="20">
-        <TextBox Text="{Binding CardNameInput, UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBox Text="{Binding MoneyAmountInput, UpdateSourceTrigger=PropertyChanged}" Margin="0 10"/>
 
         <Grid>
             <Grid.ColumnDefinitions>
-
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition/>
-                <ColumnDefinition/>
-
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" Content="Отмена" Margin="0 10 10 10" Command="{Binding CancelCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
-            <Button Grid.Column="1" Content="Ок" Margin="10 10 0 10" Command="{Binding OKCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="0"
+                       Text="Название типа оплаты"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       FontSize="16"/>
+            
+            <TextBox Grid.Column="1"
+                     Grid.Row="0"
+                     Margin="10 0 0 0"
+                     Text="{Binding CardNameInput, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <TextBlock Grid.Column="0"
+                       Grid.Row="1"
+                       Margin="10 0 0 0"
+                       Text="Количество средств"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       FontSize="16"/>
+            
+            <TextBox Grid.Column="1"
+                     Grid.Row="1"
+                     Text="{Binding MoneyAmountInput, UpdateSourceTrigger=PropertyChanged}"
+                     Margin="0 10"/>
+            
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                    Content="Отмена" Margin="0 10 10 10"
+                    Command="{Binding CancelCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
+            
+            <Button Grid.Column="1"
+                    Content="Ок"
+                    Margin="10 10 0 10"
+                    Command="{Binding OKCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
 
         </Grid>
     </StackPanel>
