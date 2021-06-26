@@ -13,15 +13,12 @@ namespace VOlkin.ViewModels
     public class OptionsViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
+        public void OnPropertyChanged([CallerMemberName] string prop = "") =>  PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
 
         private bool _isDarkThemeOn = Properties.Settings.Default.IsDarkThemeOn;//new PaletteHelper().GetTheme().GetBaseTheme() == BaseTheme.Dark;
         public bool IsDarkThemeOn
         {
-            get { return _isDarkThemeOn; }
+            get => _isDarkThemeOn;
             set
             {
                 _isDarkThemeOn = value;

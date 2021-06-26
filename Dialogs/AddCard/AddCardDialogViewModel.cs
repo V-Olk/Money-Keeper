@@ -13,10 +13,7 @@ namespace VOlkin.Dialogs.AddCard
     class AddCardDialogViewModel : DialogViewModelBase<(string, string)>, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
+        public void OnPropertyChanged([CallerMemberName] string prop = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
 
         public string CardNameInput { get; set; }
         public string MoneyAmountInput { get; set; }
@@ -29,14 +26,8 @@ namespace VOlkin.Dialogs.AddCard
             CancelCommand = new RelayCommand<DialogWindow>(Cancel);
         }
 
-        private void Cancel(IDialogWindow window)
-        {
-            CloseDialogWithResult(window, (null, null));
-        }
+        private void Cancel(IDialogWindow window) => CloseDialogWithResult(window, (null, null));
 
-        private void OK(IDialogWindow window)
-        {
-            CloseDialogWithResult(window, (CardNameInput, MoneyAmountInput));
-        }
+        private void OK(IDialogWindow window) => CloseDialogWithResult(window, (CardNameInput, MoneyAmountInput));
     }
 }

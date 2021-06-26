@@ -70,10 +70,7 @@ namespace VOlkin.ViewModels
         #region AddPaymentType
 
         private RelayCommand _addCardCommand;
-        public RelayCommand AddCardCommand
-        {
-            get { return _addCardCommand ??= new RelayCommand(AddCard); }
-        }
+        public RelayCommand AddCardCommand => _addCardCommand ??= new RelayCommand(AddCard);
 
         private async void AddCard()
         {
@@ -149,10 +146,7 @@ namespace VOlkin.ViewModels
         #region PropertyChanged
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
+        public void OnPropertyChanged([CallerMemberName] string prop = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         #endregion
     }
 }

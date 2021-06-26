@@ -21,9 +21,6 @@ namespace VOlkin.HelpClasses
             Method = method;
         }
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => Name;
     }
 }
