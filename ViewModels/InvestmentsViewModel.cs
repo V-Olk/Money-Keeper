@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VOlkin.ViewModels
 {
-    public class InvestmentsViewModel
+    public class InvestmentsViewModel : ViewModelBase
     {
     }
 }

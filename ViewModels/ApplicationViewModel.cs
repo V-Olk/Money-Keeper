@@ -14,7 +14,7 @@ using VOlkin.ViewModels;
 
 namespace VOlkin
 {
-    class ApplicationViewModel : INotifyPropertyChanged
+    class ApplicationViewModel : ViewModelBase
     {
         private readonly ObservableCollection<object> _childrenViews = new() { new OptionsViewModel(), new InvestmentsViewModel(), new MainInfoViewModel(), new CryptoViewModel() };
         public ObservableCollection<object> ChildrenViews { get { return _childrenViews; } }
@@ -23,8 +23,5 @@ namespace VOlkin
         {
 
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
 }

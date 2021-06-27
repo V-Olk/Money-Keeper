@@ -21,7 +21,7 @@ using VOlkin.Dialogs.QuestionDialog;
 
 namespace VOlkin.ViewModels
 {
-    public class MainInfoViewModel : INotifyPropertyChanged
+    public class MainInfoViewModel : ViewModelBase
     {
         private static readonly IDialogService _dialogService = new DialogService();
 
@@ -168,12 +168,6 @@ namespace VOlkin.ViewModels
             DbContext.Transactions.Where(tr => tr.DateTime > StartDate && tr.DateTime <= EndDate).OrderByDescending(tr => tr.DateTime).Load();
             OnPropertyChanged("Transactions");
         }
-
-        #region PropertyChanged
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        #endregion
     }
 }
 

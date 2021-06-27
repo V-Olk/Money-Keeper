@@ -10,11 +10,8 @@ using System.Windows;
 
 namespace VOlkin.ViewModels
 {
-    public class OptionsViewModel : INotifyPropertyChanged
+    public class OptionsViewModel : ViewModelBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "") =>  PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-
         private bool _isDarkThemeOn = Properties.Settings.Default.IsDarkThemeOn;//new PaletteHelper().GetTheme().GetBaseTheme() == BaseTheme.Dark;
         public bool IsDarkThemeOn
         {

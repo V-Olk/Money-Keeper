@@ -110,6 +110,7 @@
     <Compile Include="HelpClasses\ChangeTimePeriod.cs" />
     <Compile Include="ThemeModifier.cs" />
     <Compile Include="ViewModels\InvestmentsViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\InvestmentsView.xaml.cs">
       <DependentUpon>InvestmentsView.xaml</DependentUpon>
     </Compile>
