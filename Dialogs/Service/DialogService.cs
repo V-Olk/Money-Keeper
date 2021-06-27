@@ -10,8 +10,10 @@ namespace VOlkin.Dialogs.Service
     {
         public T OpenDialog<T>(DialogViewModelBase<T> viewModel)
         {
-            IDialogWindow window = new DialogWindow();
-            window.DataContext = viewModel;
+            IDialogWindow window = new DialogWindow
+            {
+                DataContext = viewModel
+            };
             window.ShowDialog();
             return viewModel.DialogResult;
         }

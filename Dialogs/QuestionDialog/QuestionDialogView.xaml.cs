@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace VOlkin.Views
+namespace VOlkin.Dialogs.QuestionDialog
 {
     /// <summary>
-    /// Interaction logic for MainInfoView.xaml
+    /// Interaction logic for QuestionDialogView.xaml
     /// </summary>
-    public partial class MainInfoView : UserControl
+    public partial class QuestionDialogView : UserControl
     {
-        public MainInfoView()
+        public QuestionDialogView()
         {
             InitializeComponent();
         }

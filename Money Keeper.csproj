@@ -99,6 +99,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dialogs\QuestionDialog\QuestionDialogView.xaml.cs">
+      <DependentUpon>QuestionDialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\QuestionDialog\QuestionDialogViewModel.cs" />
     <Compile Include="Dialogs\ReadTwoDates\ReadTwoDatesView.xaml.cs">
       <DependentUpon>ReadTwoDatesView.xaml</DependentUpon>
     </Compile>
@@ -113,6 +117,10 @@
       <DependentUpon>OptionsView.xaml</DependentUpon>
     </Compile>
     <Page Include="Dialogs\AddCard\AddCardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\QuestionDialog\QuestionDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

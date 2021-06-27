@@ -15,6 +15,8 @@ namespace VOlkin
         public string PaymentTypeName { get; set; }
         [Required]
         public decimal MoneyAmount { get; set; }
+        [Required]
+        public bool IsClosed { get; set; }
         //public Banks BankFk { get; set; }
     }
 }

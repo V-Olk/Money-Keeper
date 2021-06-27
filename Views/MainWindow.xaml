@@ -16,49 +16,50 @@
         MinHeight="600"  
         MinWidth="500">
 
-    <TabControl TabStripPlacement="Bottom" SelectedIndex="2" Style="{DynamicResource MahApps.Styles.TabControl.AnimatedSingleRow}">
-        <TabControl.Resources>
-            <Style TargetType="{x:Type TabPanel}">
-                <Setter Property="HorizontalAlignment" Value="Center" />
-                <Setter Property="Margin" Value="0 0 60 0"/>
-            </Style>
+    <materialDesign:DialogHost Identifier="RootDialog">
+        <TabControl TabStripPlacement="Bottom" SelectedIndex="2" Style="{DynamicResource MahApps.Styles.TabControl.AnimatedSingleRow}">
+            <TabControl.Resources>
+                <Style TargetType="{x:Type TabPanel}">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="Margin" Value="0 0 60 0"/>
+                </Style>
 
-        </TabControl.Resources>
+            </TabControl.Resources>
 
-        <TabItem DataContext="{Binding ChildrenViews[0]}" x:Name="Options" Height="30" Width="40">
+            <TabItem DataContext="{Binding ChildrenViews[0]}" x:Name="Options" Height="30" Width="40">
 
-            <TabItem.Header>
+                <TabItem.Header>
 
-                <materialDesign:PackIcon Kind="Cog"
+                    <materialDesign:PackIcon Kind="Cog"
                                          HorizontalAlignment="Center"
                                          VerticalAlignment="Center" Height="20" Width="20"
                                          
                                          />
-            </TabItem.Header>
-            <views:OptionsView/>
-        </TabItem>
+                </TabItem.Header>
+                <views:OptionsView/>
+            </TabItem>
 
-        <TabItem DataContext="{Binding ChildrenViews[1]}" x:Name="Investments">
-            <TabItem.Header>
-                <materialDesign:PackIcon Kind="ChartAreaspline" HorizontalAlignment="Center"  VerticalAlignment="Center" Height="20" Width="20"/>
-            </TabItem.Header>
-            <views:InvestmentsView/>
-        </TabItem>
+            <TabItem DataContext="{Binding ChildrenViews[1]}" x:Name="Investments">
+                <TabItem.Header>
+                    <materialDesign:PackIcon Kind="ChartAreaspline" HorizontalAlignment="Center"  VerticalAlignment="Center" Height="20" Width="20"/>
+                </TabItem.Header>
+                <views:InvestmentsView/>
+            </TabItem>
 
-        <TabItem DataContext="{Binding ChildrenViews[2]}" x:Name="Main">
-            <TabItem.Header>
-                <materialDesign:PackIcon Kind="Menu" HorizontalAlignment="Center"  VerticalAlignment="Center" Height="20" Width="20"/>
-            </TabItem.Header>
-            <views:MainInfoView/>
-        </TabItem>
+            <TabItem DataContext="{Binding ChildrenViews[2]}" x:Name="Main">
+                <TabItem.Header>
+                    <materialDesign:PackIcon Kind="Menu" HorizontalAlignment="Center"  VerticalAlignment="Center" Height="20" Width="20"/>
+                </TabItem.Header>
+                <views:MainInfoView/>
+            </TabItem>
 
-        <TabItem DataContext="{Binding ChildrenViews[3]}" x:Name="Crypto">
-            <TabItem.Header>
-                <materialDesign:PackIcon Kind="Bitcoin" HorizontalAlignment="Center"  VerticalAlignment="Center" Height="20" Width="20"/>
-            </TabItem.Header>
-            <views:CryptoView/>
-        </TabItem>
+            <TabItem DataContext="{Binding ChildrenViews[3]}" x:Name="Crypto">
+                <TabItem.Header>
+                    <materialDesign:PackIcon Kind="Bitcoin" HorizontalAlignment="Center"  VerticalAlignment="Center" Height="20" Width="20"/>
+                </TabItem.Header>
+                <views:CryptoView/>
+            </TabItem>
 
-    </TabControl>
-
+        </TabControl>
+    </materialDesign:DialogHost>
 </controls:MetroWindow>

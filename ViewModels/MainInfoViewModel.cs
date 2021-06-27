@@ -15,6 +15,9 @@ using VOlkin.HelpClasses;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using VOlkin.Dialogs.ReadTwoDates;
+using System.Windows.Input;
+using MaterialDesignThemes.Wpf;
+using VOlkin.Dialogs.QuestionDialog;
 
 namespace VOlkin.ViewModels
 {
@@ -39,7 +42,7 @@ namespace VOlkin.ViewModels
 
         public decimal TotalMoney { get; set; }
         public static DateTime StartDate { get; set; }
-        public static DateTime EndDate { get; set; } = DateTime.MaxValue;//default max val
+        public static DateTime EndDate { get; set; } = DateTime.MaxValue;
 
         private ChangeTimePeriod _setCurTimePeriod;
         public ChangeTimePeriod SetCurTimePeriod
@@ -59,13 +62,37 @@ namespace VOlkin.ViewModels
         public MainInfoViewModel()
         {
             DbContext = new DatabaseContext();
-            DbContext.PaymentTypes.Load();
+            DbContext.PaymentTypes.Where(pt => pt.IsClosed == false).Load();
             PaymentTypes = DbContext.PaymentTypes.Local;
             Transactions = DbContext.Transactions.Local;
 
             TotalMoney = PaymentTypes.Sum(pt => pt.MoneyAmount);
             SetCurTimePeriod = TimePeriods[0];
         }
+
+        #region ClosePaymentType
+        private RelayCommand<PaymentType> _closeCardCommand;
+        public RelayCommand<PaymentType> CloseCardCommand => _closeCardCommand ??= new RelayCommand<PaymentType>(RemoveCard);
+        private async void RemoveCard(PaymentType paymentType)
+        {
+            QuestionDialogView view = new()
+            {
+                DataContext = new QuestionDialogViewModel($"Вы действительно хотите закрыть счет \"{paymentType.PaymentTypeName}\"?{Environment.NewLine}" +
+                $"Вы всегда сможете восстановить его в настройках")
+            };
+
+            var result = await DialogHost.Show(view, "RootDialog");
+            if (!(bool)result)
+                return;
+            paymentType.IsClosed = true;
+            DbContext.SaveChanges();
+            PaymentTypes.Remove(paymentType);
+
+            ////TODO: automate it
+            TotalMoney -= paymentType.MoneyAmount;
+            OnPropertyChanged("TotalMoney");
+        }
+        #endregion
 
         #region AddPaymentType
 
@@ -96,13 +123,14 @@ namespace VOlkin.ViewModels
             PaymentType newPT = new()
             {
                 PaymentTypeName = addCardDialogRes.Item1,
-                MoneyAmount = moneyAmount
+                MoneyAmount = moneyAmount,
+                IsClosed = false
             };
 
             DbContext.PaymentTypes.Add(newPT);
             DbContext.SaveChanges();
 
-            ////TODO: it needs to be automated?
+            ////TODO: automate it
             TotalMoney += moneyAmount;
             OnPropertyChanged("TotalMoney");
         }
@@ -117,13 +145,13 @@ namespace VOlkin.ViewModels
         private static bool ChangeTimePeriodToAllTime() { StartDate = DateTime.MinValue; EndDate = DateTime.MaxValue; return true; }
         private static bool ChangeTimePeriodToCustom()
         {
-            var addCardDialog = new ReadTwoDatesViewModel("Выбор периода времени", StartDate, EndDate);
-            var addCardDialogRes = _dialogService.OpenDialog(addCardDialog);
-            if (addCardDialogRes.Item1 == DateTime.MinValue && addCardDialogRes.Item2 == DateTime.MinValue)
+            var readTwoDatesDialog = new ReadTwoDatesViewModel("Выбор периода времени", StartDate, EndDate);
+            var readTwoDatesRes = _dialogService.OpenDialog(readTwoDatesDialog);
+            if (readTwoDatesRes.Item1 == DateTime.MinValue && readTwoDatesRes.Item2 == DateTime.MinValue)
                 return false;
 
-            StartDate = addCardDialogRes.Item1;
-            EndDate = addCardDialogRes.Item2;
+            StartDate = readTwoDatesRes.Item1;
+            EndDate = readTwoDatesRes.Item2;
 
             return true;
         }
@@ -131,12 +159,10 @@ namespace VOlkin.ViewModels
 
         private void LoadTransactions()
         {
-            //DbContext.Transactions.Local.Clear();
-
             DbContext.Transactions.Local.ToList().ForEach(x =>
             {
                 DbContext.Entry(x).State = EntityState.Detached;
-                x = null; // this doesn't seem to be required for garbage collection
+                x = null;
             });
 
             DbContext.Transactions.Where(tr => tr.DateTime > StartDate && tr.DateTime <= EndDate).OrderByDescending(tr => tr.DateTime).Load();
@@ -155,9 +181,9 @@ namespace ExtensionMethods
 {
     public static class DateTimeExtensions
     {
-        public static DateTime FirstDayOfYear(this DateTime value) => new DateTime(value.Year, 1, 1);
+        public static DateTime FirstDayOfYear(this DateTime value) => new(value.Year, 1, 1);
 
-        public static DateTime FirstDayOfMonth(this DateTime value) => new DateTime(value.Year, value.Month, 1);
+        public static DateTime FirstDayOfMonth(this DateTime value) => new(value.Year, value.Month, 1);
 
         public static DateTime FirstDayOfWeek(this DateTime value, DayOfWeek startOfWeek)
         {
