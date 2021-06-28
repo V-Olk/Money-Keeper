@@ -7,7 +7,7 @@
       mc:Ignorable="d" 
       WindowStartupLocation="CenterScreen"
       Title="{Binding Title}"
-      Height="175"
+      Height="240"
       Width="600"
       ResizeMode="NoResize">
 

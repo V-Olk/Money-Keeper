@@ -18,6 +18,8 @@ using VOlkin.Dialogs.ReadTwoDates;
 using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
 using VOlkin.Dialogs.QuestionDialog;
+using VOlkin.Dialogs.AddTransaction;
+using System.Collections.Specialized;
 
 namespace VOlkin.ViewModels
 {
@@ -27,7 +29,7 @@ namespace VOlkin.ViewModels
 
         public DatabaseContext DbContext;
         public ObservableCollection<PaymentType> PaymentTypes { get; set; }
-
+        public ObservableCollection<Category> Categories { get; set; }
         public ObservableCollection<Transaction> Transactions { get; set; }
 
         public ObservableCollection<ChangeTimePeriod> TimePeriods { get; set; } = new ObservableCollection<ChangeTimePeriod>()
@@ -66,9 +68,39 @@ namespace VOlkin.ViewModels
             PaymentTypes = DbContext.PaymentTypes.Local;
             Transactions = DbContext.Transactions.Local;
 
+            DbContext.Categories.Load();
+            Categories = DbContext.Categories.Local;
+
             TotalMoney = PaymentTypes.Sum(pt => pt.MoneyAmount);
             SetCurTimePeriod = TimePeriods[0];
         }
+
+        #region AddTransaction
+
+        private RelayCommand _addTransactionCommand;
+        public RelayCommand AddTransactionCommand => _addTransactionCommand ??= new RelayCommand(AddTransaction);
+
+        private void AddTransaction()
+        {
+            var dialog = new AddTransactionViewModel("Добавление новой транзакции", PaymentTypes, Categories);
+            var dialogRes = _dialogService.OpenDialog(dialog);
+            if (dialogRes == null)
+                return;
+
+            DbContext.Transactions.Add(dialogRes);
+            dialogRes.PaymentTypeFk.MoneyAmount -= dialogRes.Price;
+            DbContext.SaveChanges();
+
+            ////TODO: automate it
+            DbContext.PaymentTypes.Local.ToList().ForEach(x => {DbContext.Entry(x).State = EntityState.Detached;x = null;});
+            DbContext.PaymentTypes.Where(pt => pt.IsClosed == false).Load();
+            OnPropertyChanged("PaymentTypes");
+
+            TotalMoney -= dialogRes.Price;
+            OnPropertyChanged("TotalMoney");
+        }
+
+        #endregion
 
         #region ClosePaymentType
         private RelayCommand<PaymentType> _closeCardCommand;

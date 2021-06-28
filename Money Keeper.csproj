@@ -99,6 +99,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dialogs\AddTransaction\AddTransactionView.xaml.cs">
+      <DependentUpon>AddTransactionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\AddTransaction\AddTransactionViewModel.cs" />
     <Compile Include="Dialogs\QuestionDialog\QuestionDialogView.xaml.cs">
       <DependentUpon>QuestionDialogView.xaml</DependentUpon>
     </Compile>
@@ -118,6 +122,10 @@
       <DependentUpon>OptionsView.xaml</DependentUpon>
     </Compile>
     <Page Include="Dialogs\AddCard\AddCardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\AddTransaction\AddTransactionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

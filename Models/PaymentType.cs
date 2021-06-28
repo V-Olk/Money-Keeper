@@ -9,6 +9,8 @@ namespace VOlkin
 {
     public class PaymentType
     {
+        public override string ToString() => PaymentTypeName;
+
         [Key]
         public int PaymentTypeId { get; set; }
         [Required]

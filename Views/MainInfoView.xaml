@@ -45,6 +45,8 @@
 
     <ScrollViewer>
         <StackPanel Margin="10">
+
+            <!--PaymentTypes-->
             <Expander>
                 <Expander.Header>
                     <Grid  HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
@@ -54,7 +56,7 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="Карты" Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="Счета" Grid.Column="0" VerticalAlignment="Center">
 
                         </TextBlock>
 
@@ -78,24 +80,38 @@
                 </ListBox>
             </Expander>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
-                <TextBlock Text="Доходы и расходы за "
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       FontSize="16"
-                       />
+            <!--Transactions-->
+            <Grid HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
 
-                <ComboBox ItemsSource="{Binding TimePeriods}"
-                      SelectedItem="{Binding SetCurTimePeriod, Delay=10}"
-                      FontSize="16">
-                    <ComboBox.Resources>
-                        <Style TargetType="{x:Type ComboBoxItem}">
-                            <Setter Property="HorizontalAlignment" Value="Center"/>
-                        </Style>
-                    </ComboBox.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
 
-                </ComboBox>
-            </StackPanel>
+                <StackPanel  HorizontalAlignment="Center" Orientation="Horizontal" Grid.Column="1">
+                    <TextBlock Text="Доходы и расходы за "
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="16"
+                                       />
+
+                    <ComboBox ItemsSource="{Binding TimePeriods}"
+                              SelectedItem="{Binding SetCurTimePeriod, Delay=10}"
+                              FontSize="16">
+                        <ComboBox.Resources>
+                            <Style TargetType="{x:Type ComboBoxItem}">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </ComboBox.Resources>
+
+                    </ComboBox>
+                </StackPanel>
+
+                <Button Grid.Column="2" HorizontalAlignment="Right" Command="{Binding AddTransactionCommand}">
+                    <materialDesign:PackIcon Kind="Plus"/>
+                </Button>
+            </Grid>
 
             <ListView ItemsSource="{Binding Transactions}"
                       ItemTemplate="{StaticResource TransactionsTemplate}"/>

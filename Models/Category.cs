@@ -9,6 +9,8 @@ namespace VOlkin
 {
     public class Category
     {
+        public override string ToString() => CategoryName;
+
         [Key]
         public int CategoryId { get; set; }
         [Required]
