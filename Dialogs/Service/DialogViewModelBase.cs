@@ -8,9 +8,9 @@ namespace VOlkin.Dialogs.Service
 {
     public abstract class DialogViewModelBase<T>
     {
-        public string Title { get; set; }
-        public string Message { get; set; }
-        public T DialogResult { get; set; }
+        public string Title { get; protected set; }
+        public string Message { get; protected set; }
+        public T DialogResult { get; protected set; }
 
         public DialogViewModelBase() : this(string.Empty, string.Empty) { }
         public DialogViewModelBase(string title) : this(title, string.Empty) { }

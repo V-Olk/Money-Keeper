@@ -21,6 +21,7 @@ namespace VOlkin.ViewModels
 
             member = value;
             OnPropertyChanged(propertyName);
+
             return true;
         }
 

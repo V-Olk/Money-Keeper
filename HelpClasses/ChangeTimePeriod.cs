@@ -10,9 +10,9 @@ namespace VOlkin.HelpClasses
 
     public class ChangeTimePeriod
     {
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
-        public Method Method { get; set; }
+        public Method Method { get; private set; }
 
 
         public ChangeTimePeriod(string name, Method method)

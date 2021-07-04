@@ -14,7 +14,9 @@ namespace VOlkin.Dialogs.Service
             {
                 DataContext = viewModel
             };
+
             window.ShowDialog();
+
             return viewModel.DialogResult;
         }
     }

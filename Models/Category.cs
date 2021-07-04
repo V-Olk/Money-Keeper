@@ -12,8 +12,8 @@ namespace VOlkin
         public override string ToString() => CategoryName;
 
         [Key]
-        public int CategoryId { get; set; }
+        public int CategoryId { get; private set; }
         [Required]
-        public string CategoryName { get; set; }
+        public string CategoryName { get; private set; }
     }
 }

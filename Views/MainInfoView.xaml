@@ -89,6 +89,8 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
+                
+                
                 <StackPanel  HorizontalAlignment="Center" Orientation="Horizontal" Grid.Column="1">
                     <TextBlock Text="Доходы и расходы за "
                                        HorizontalAlignment="Center"

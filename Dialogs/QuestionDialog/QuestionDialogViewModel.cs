@@ -9,10 +9,11 @@ namespace VOlkin.Dialogs.QuestionDialog
 {
     public class QuestionDialogViewModel : ViewModelBase
     {
+        public string Question { get; private set; }
+
         public QuestionDialogViewModel(string question)
         {
             Question = question;
         }
-        public string Question { get; set; }
     }
 }

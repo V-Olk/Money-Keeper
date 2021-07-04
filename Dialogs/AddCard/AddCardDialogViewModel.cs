@@ -15,8 +15,8 @@ namespace VOlkin.Dialogs.AddCard
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
 
-        public string CardNameInput { get; set; }
-        public string MoneyAmountInput { get; set; }
+        public string CardNameInput { get; private set; }
+        public string MoneyAmountInput { get; private set; }
         public ICommand OKCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
 

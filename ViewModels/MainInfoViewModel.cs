@@ -84,6 +84,7 @@ namespace VOlkin.ViewModels
         {
             var dialog = new AddTransactionViewModel("Добавление новой транзакции", PaymentTypes, Categories);
             var dialogRes = _dialogService.OpenDialog(dialog);
+
             if (dialogRes == null)
                 return;
 
@@ -92,7 +93,7 @@ namespace VOlkin.ViewModels
             DbContext.SaveChanges();
 
             ////TODO: automate it
-            DbContext.PaymentTypes.Local.ToList().ForEach(x => {DbContext.Entry(x).State = EntityState.Detached;x = null;});
+            DbContext.PaymentTypes.Local.ToList().ForEach(x => { DbContext.Entry(x).State = EntityState.Detached; x = null; });
             DbContext.PaymentTypes.Where(pt => pt.IsClosed == false).Load();
             OnPropertyChanged("PaymentTypes");
 
@@ -105,6 +106,7 @@ namespace VOlkin.ViewModels
         #region ClosePaymentType
         private RelayCommand<PaymentType> _closeCardCommand;
         public RelayCommand<PaymentType> CloseCardCommand => _closeCardCommand ??= new RelayCommand<PaymentType>(RemoveCard);
+
         private async void RemoveCard(PaymentType paymentType)
         {
             QuestionDialogView view = new()
@@ -114,8 +116,9 @@ namespace VOlkin.ViewModels
             };
 
             var result = await DialogHost.Show(view, "RootDialog");
-            if (!(bool)result)
+            if ((bool)result == false)
                 return;
+
             paymentType.IsClosed = true;
             DbContext.SaveChanges();
             PaymentTypes.Remove(paymentType);
@@ -142,6 +145,7 @@ namespace VOlkin.ViewModels
             {
                 var metroWindow = Application.Current.MainWindow as MetroWindow;
                 await metroWindow.ShowMessageAsync("Ошибка", "Не удалось распознать строку кол-ва средств");
+
                 return;
             }
 
@@ -149,15 +153,11 @@ namespace VOlkin.ViewModels
             {
                 var metroWindow = Application.Current.MainWindow as MetroWindow;
                 await metroWindow.ShowMessageAsync("Ошибка", "Счет с таким наименованием уже существует");
+
                 return;
             }
 
-            PaymentType newPT = new()
-            {
-                PaymentTypeName = addCardDialogRes.Item1,
-                MoneyAmount = moneyAmount,
-                IsClosed = false
-            };
+            PaymentType newPT = new(addCardDialogRes.Item1, moneyAmount);
 
             DbContext.PaymentTypes.Add(newPT);
             DbContext.SaveChanges();
