@@ -42,7 +42,13 @@ namespace VOlkin.ViewModels
             new ChangeTimePeriod("Свой период", ChangeTimePeriodToCustom)
         };
 
-        public decimal TotalMoney { get; set; }
+        public decimal TotalMoney
+        {
+            get
+            {
+                return PaymentTypes?.Sum(pt => pt.MoneyAmount) ?? 0;
+            }
+        }
         public static DateTime StartDate { get; set; }
         public static DateTime EndDate { get; set; } = DateTime.MaxValue;
 
@@ -71,7 +77,8 @@ namespace VOlkin.ViewModels
             DbContext.Categories.Load();
             Categories = DbContext.Categories.Local;
 
-            TotalMoney = PaymentTypes.Sum(pt => pt.MoneyAmount);
+            PaymentTypes.CollectionChanged += (s, e) => OnPropertyChanged("TotalMoney");
+
             SetCurTimePeriod = TimePeriods[0];
         }
 
@@ -96,9 +103,6 @@ namespace VOlkin.ViewModels
             DbContext.PaymentTypes.Local.ToList().ForEach(x => { DbContext.Entry(x).State = EntityState.Detached; x = null; });
             DbContext.PaymentTypes.Where(pt => pt.IsClosed == false).Load();
             OnPropertyChanged("PaymentTypes");
-
-            TotalMoney -= dialogRes.Price;
-            OnPropertyChanged("TotalMoney");
         }
 
         #endregion
@@ -122,10 +126,6 @@ namespace VOlkin.ViewModels
             paymentType.IsClosed = true;
             DbContext.SaveChanges();
             PaymentTypes.Remove(paymentType);
-
-            ////TODO: automate it
-            TotalMoney -= paymentType.MoneyAmount;
-            OnPropertyChanged("TotalMoney");
         }
         #endregion
 
@@ -161,10 +161,6 @@ namespace VOlkin.ViewModels
 
             DbContext.PaymentTypes.Add(newPT);
             DbContext.SaveChanges();
-
-            ////TODO: automate it
-            TotalMoney += moneyAmount;
-            OnPropertyChanged("TotalMoney");
         }
 
         #endregion

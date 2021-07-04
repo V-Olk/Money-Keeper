@@ -60,7 +60,7 @@
 
                         </TextBlock>
 
-                        <TextBlock Text="{Binding Path=TotalMoney, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Path=TotalMoney, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalAlignment="Center">
 
                         </TextBlock>
 

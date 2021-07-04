@@ -26,6 +26,9 @@ namespace VOlkin
             MoneyAmount = moneyAmount;
         }
 
+        private PaymentType()
+        { }
+
         //public Banks BankFk { get; set; }
     }
 }

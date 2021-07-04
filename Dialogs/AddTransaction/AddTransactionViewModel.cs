@@ -51,15 +51,7 @@ namespace VOlkin.Dialogs.AddTransaction
                 return;
             }
 
-            Transaction transaction = new()
-            {
-                CategoryFk = Category,
-                Comment = Coment,
-                DateTime = DatTime,
-                Price = price,
-                PaymentTypeFk = PaymentType,
-                TransactionType = 0
-            };
+            Transaction transaction = new(Category, Coment, DatTime, price, PaymentType, 0);
 
             CloseDialogWithResult(window, transaction);
         }
