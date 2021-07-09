@@ -6,10 +6,11 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using VOlkin.HelpClasses;
 
 namespace VOlkin
 {
-    public class PaymentType : ViewModels.ViewModelBase
+    public class PaymentType : NotifyPropertyChanged
     {
         private PaymentType()
         { }

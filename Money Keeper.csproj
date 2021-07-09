@@ -112,6 +112,7 @@
     </Compile>
     <Compile Include="Dialogs\ReadTwoDates\ReadTwoDatesViewModel.cs" />
     <Compile Include="HelpClasses\ChangeTimePeriod.cs" />
+    <Compile Include="HelpClasses\NotifyPropertyChanged.cs" />
     <Compile Include="ThemeModifier.cs" />
     <Compile Include="ViewModels\InvestmentsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
