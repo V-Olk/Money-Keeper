@@ -27,10 +27,10 @@ namespace VOlkin.ViewModels
     {
         private static readonly IDialogService _dialogService = new DialogService();
 
-        public DatabaseContext DbContext;
-        public ObservableCollection<PaymentType> PaymentTypes { get; set; }
-        public ObservableCollection<Category> Categories { get; set; }
-        public ObservableCollection<Transaction> Transactions { get; set; }
+        public static DatabaseContext DbContext { get; } = new DatabaseContext();
+        public ObservableCollection<PaymentType> PaymentTypes { get; set; } = DbContext.PaymentTypes.Local;
+        public ObservableCollection<Category> Categories { get; set; } = DbContext.Categories.Local;
+        public ObservableCollection<Transaction> Transactions { get; set; } = DbContext.Transactions.Local;
 
         public ObservableCollection<ChangeTimePeriod> TimePeriods { get; set; } = new ObservableCollection<ChangeTimePeriod>()
         {
@@ -69,15 +69,11 @@ namespace VOlkin.ViewModels
 
         public MainInfoViewModel()
         {
-            DbContext = new DatabaseContext();
             DbContext.PaymentTypes.Where(pt => pt.IsClosed == false).Load();
-            PaymentTypes = DbContext.PaymentTypes.Local;
-            Transactions = DbContext.Transactions.Local;
 
             DbContext.Categories.Load();
-            Categories = DbContext.Categories.Local;
 
-            PaymentTypes.CollectionChanged += (s, e) => OnPropertyChanged("TotalMoney");
+            PaymentTypes.CollectionChanged += (s, e) => { OnPropertyChanged("TotalMoney"); };
 
             SetCurTimePeriod = TimePeriods[0];
         }
@@ -96,13 +92,12 @@ namespace VOlkin.ViewModels
                 return;
 
             DbContext.Transactions.Add(dialogRes);
-            dialogRes.PaymentTypeFk.MoneyAmount -= dialogRes.Price;
-            DbContext.SaveChanges();
 
-            ////TODO: automate it
-            DbContext.PaymentTypes.Local.ToList().ForEach(x => { DbContext.Entry(x).State = EntityState.Detached; x = null; });
-            DbContext.PaymentTypes.Where(pt => pt.IsClosed == false).Load();
-            OnPropertyChanged("PaymentTypes");
+            PaymentType pt = dialogRes.PaymentTypeFk;
+            pt -= dialogRes.Price;
+
+            DbContext.SaveChanges();
+            OnPropertyChanged("TotalMoney");
         }
 
         #endregion
@@ -123,9 +118,10 @@ namespace VOlkin.ViewModels
             if ((bool)result == false)
                 return;
 
-            paymentType.IsClosed = true;
+            paymentType.Close();
             DbContext.SaveChanges();
-            PaymentTypes.Remove(paymentType);
+
+            DbContext.Entry(paymentType).State = EntityState.Detached;
         }
         #endregion
 
