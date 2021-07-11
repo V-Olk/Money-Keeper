@@ -72,11 +72,19 @@
                 </Expander.Header>
 
                 <ListBox x:Name="PaymenTypesListBox" ItemsSource="{Binding PaymentTypes}" ItemTemplate="{StaticResource PaymentTypesTemplate}">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseRightButtonUp">
-                            <i:InvokeCommandAction Command="{Binding CloseCardCommand}" CommandParameter="{Binding ElementName=PaymenTypesListBox, Path=SelectedItem}" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Закрыть счет"
+                                      Command="{Binding CloseCardCommand}"
+                                       CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}},
+                                                                  Path=PlacementTarget.SelectedItem}">
+                                
+                                <!--<MenuItem.Icon>
+                                    <Image Source="/WpfTutorialSamples;component/Images/cut.png" />
+                                </MenuItem.Icon>-->
+                            </MenuItem>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
                 </ListBox>
             </Expander>
 
