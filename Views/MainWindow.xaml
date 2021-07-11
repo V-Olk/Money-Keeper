@@ -5,8 +5,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:VOlkin.Views"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:ie="http://schemas.microsoft.com/xaml/behaviors"
+                      mc:Ignorable="d"
         BorderThickness="0"
         Background="{DynamicResource MaterialDesignPaper}"
         Foreground="{DynamicResource MaterialDesignBody}"
@@ -17,7 +17,16 @@
         MinWidth="700">
 
     <materialDesign:DialogHost Identifier="RootDialog">
-        <TabControl TabStripPlacement="Bottom" SelectedIndex="2" Style="{DynamicResource MahApps.Styles.TabControl.AnimatedSingleRow}">
+        
+        <TabControl x:Name="MainTabsControl" TabStripPlacement="Bottom" SelectedIndex="2" Style="{DynamicResource MahApps.Styles.TabControl.AnimatedSingleRow}">
+
+            <ie:Interaction.Triggers>
+                <ie:EventTrigger EventName="SelectionChanged">
+                    <ie:InvokeCommandAction Command="{Binding SelectedTabChangedCommand}"
+                                            CommandParameter="{Binding ElementName=MainTabsControl, Path=SelectedIndex}"/>
+                </ie:EventTrigger>
+            </ie:Interaction.Triggers>
+
             <TabControl.Resources>
                 <Style TargetType="{x:Type TabPanel}">
                     <Setter Property="HorizontalAlignment" Value="Center" />

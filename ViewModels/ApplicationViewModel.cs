@@ -16,12 +16,45 @@ namespace VOlkin
 {
     class ApplicationViewModel : ViewModelBase
     {
-        private readonly ObservableCollection<object> _childrenViews = new() { new OptionsViewModel(), new InvestmentsViewModel(), new MainInfoViewModel(), new CryptoViewModel() };
+        private readonly ObservableCollection<object> _childrenViews = new() {null, null, null, null };
         public ObservableCollection<object> ChildrenViews { get { return _childrenViews; } }
 
         public ApplicationViewModel()
         {
 
         }
+
+        #region SelectedTabChanged
+        private RelayCommand<int> _selectedTabChangedCommand;
+        public RelayCommand<int> SelectedTabChangedCommand => _selectedTabChangedCommand ??= new RelayCommand<int>(LoadTabViewModel);
+
+        private void LoadTabViewModel(int selectedTabIndex)
+        {
+            if (ChildrenViews[selectedTabIndex] == null)
+            {
+                switch (selectedTabIndex)
+                {
+                    case 0:
+                        ChildrenViews[selectedTabIndex] = new OptionsViewModel();
+                        break;
+
+                    case 1:
+                        ChildrenViews[selectedTabIndex] = new InvestmentsViewModel();
+                        break;
+
+                    case 2:
+                        ChildrenViews[selectedTabIndex] = new MainInfoViewModel();
+                        break;
+
+                    case 3:
+                        ChildrenViews[selectedTabIndex] = new CryptoViewModel();
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+        #endregion
     }
 }
