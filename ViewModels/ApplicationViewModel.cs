@@ -21,7 +21,7 @@ namespace VOlkin
 
         public ApplicationViewModel()
         {
-
+            LoadTabViewModel(2);//TODO: Change value to value saved in settings like default tab
         }
 
         #region SelectedTabChanged
