@@ -14,8 +14,8 @@ namespace VOlkin.Dialogs.ReadTwoDates
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public static DateTime StartDate { get; private set; }
-        public static DateTime EndDate { get; private set; }
+        public static DateTime StartDate { get; set; }
+        public static DateTime EndDate { get; set; }
         public ICommand OKCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
 
