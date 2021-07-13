@@ -8,7 +8,7 @@ namespace VOlkin.Dialogs.Service
 {
     public class DialogService : IDialogService
     {
-        public T OpenDialog<T>(DialogViewModelBase<T> viewModel)
+        public bool OpenDialog<T>(DialogViewModelBase<T> viewModel, out T result)
         {
             IDialogWindow window = new DialogWindow
             {
@@ -17,7 +17,9 @@ namespace VOlkin.Dialogs.Service
 
             window.ShowDialog();
 
-            return viewModel.DialogResult;
+            result = viewModel.DialogResult;
+
+            return (bool)window.DialogResult;
         }
     }
 }

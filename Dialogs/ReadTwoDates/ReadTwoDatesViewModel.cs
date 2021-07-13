@@ -10,15 +10,8 @@ using VOlkin.Dialogs.Service;
 
 namespace VOlkin.Dialogs.ReadTwoDates
 {
-    class ReadTwoDatesViewModel : DialogViewModelBase<(DateTime, DateTime)>, INotifyPropertyChanged
+    class ReadTwoDatesViewModel : DialogViewModelBase<(DateTime, DateTime)>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public static DateTime StartDate { get; set; }
-        public static DateTime EndDate { get; set; }
-        public ICommand OKCommand { get; private set; }
-        public ICommand CancelCommand { get; private set; }
-
         public ReadTwoDatesViewModel(string title, DateTime startDate, DateTime endDate) : base(title)
         {
             StartDate = startDate;
@@ -32,10 +25,14 @@ namespace VOlkin.Dialogs.ReadTwoDates
             CancelCommand = new RelayCommand<DialogWindow>(Cancel);
         }
 
-        private void Cancel(IDialogWindow window) => CloseDialogWithResult(window, (DateTime.MinValue, DateTime.MinValue));
+        public ICommand OKCommand { get; private set; }
+        public ICommand CancelCommand { get; private set; }
+        public static DateTime StartDate { get; set; }
+        public static DateTime EndDate { get; set; }
 
-        private void OK(IDialogWindow window) => CloseDialogWithResult(window, (StartDate, EndDate));
+        private void Cancel(IDialogWindow window) => CloseDialogWithResult(window, (DateTime.MinValue, DateTime.MinValue), false);
 
-        public void OnPropertyChanged([CallerMemberName] string prop = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        private void OK(IDialogWindow window) => CloseDialogWithResult(window, (StartDate, EndDate), true);
+
     }
 }

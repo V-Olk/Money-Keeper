@@ -16,16 +16,15 @@ namespace VOlkin
 {
     class ApplicationViewModel : ViewModelBase
     {
-        private readonly ObservableCollection<object> _childrenViews = new() {null, null, null, null };
-        public ObservableCollection<object> ChildrenViews { get { return _childrenViews; } }
+        private RelayCommand<int> _selectedTabChangedCommand;
 
         public ApplicationViewModel()
         {
             LoadTabViewModel(2);//TODO: Change value to value saved in settings like default tab
         }
 
-        #region SelectedTabChanged
-        private RelayCommand<int> _selectedTabChangedCommand;
+        private readonly ObservableCollection<object> _childrenViews = new() { null, null, null, null };
+        public ObservableCollection<object> ChildrenViews { get { return _childrenViews; } }
         public RelayCommand<int> SelectedTabChangedCommand => _selectedTabChangedCommand ??= new RelayCommand<int>(LoadTabViewModel);
 
         private void LoadTabViewModel(int selectedTabIndex)
@@ -55,6 +54,5 @@ namespace VOlkin
                 }
             }
         }
-        #endregion
     }
 }

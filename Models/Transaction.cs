@@ -10,6 +10,18 @@ namespace VOlkin
 {
     public class Transaction
     {
+        private Transaction() { }
+
+        public Transaction(Category category, string comment, DateTime dateTime, decimal price, PaymentType paymentType, int transactionType)
+        {
+            CategoryFk = category;
+            Comment = comment;
+            DateTime = dateTime;
+            Price = price;
+            PaymentTypeFk = paymentType;
+            TransactionType = transactionType;
+        }
+
         [Key]
         public int TransactionId { get; private set; }
         [Timestamp]
@@ -25,16 +37,5 @@ namespace VOlkin
         [Required]
         public PaymentType PaymentTypeFk { get; private set; }
 
-        public Transaction(Category category, string comment, DateTime dateTime, decimal price, PaymentType paymentType, int transactionType)
-        {
-            CategoryFk = category;
-            Comment = comment;
-            DateTime = dateTime;
-            Price = price;
-            PaymentTypeFk = paymentType;
-            TransactionType = transactionType;
-        }
-
-        private Transaction() { }
     }
 }

@@ -10,15 +10,9 @@ using VOlkin.Dialogs.Service;
 
 namespace VOlkin.Dialogs.AddCard
 {
-    class AddCardDialogViewModel : DialogViewModelBase<(string, string)>, INotifyPropertyChanged
+    public class AddCardDialogViewModel : DialogViewModelBase<(string, string)>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-
-        public string CardNameInput { get; set; }
-        public string MoneyAmountInput { get; set; }
-        public ICommand OKCommand { get; private set; }
-        public ICommand CancelCommand { get; private set; }
+        public string _cardNameInput;
 
         public AddCardDialogViewModel(string title) : base(title)
         {
@@ -26,8 +20,32 @@ namespace VOlkin.Dialogs.AddCard
             CancelCommand = new RelayCommand<DialogWindow>(Cancel);
         }
 
-        private void Cancel(IDialogWindow window) => CloseDialogWithResult(window, (null, null));
+        public bool OkButtonAvailable { get; private set; } = false;
+        public ICommand OKCommand { get; private set; }
+        public ICommand CancelCommand { get; private set; }
+        public string MoneyAmountInput { get; set; }
 
-        private void OK(IDialogWindow window) => CloseDialogWithResult(window, (CardNameInput, MoneyAmountInput));
+        public string CardNameInput
+        {
+            get => _cardNameInput;
+            set
+            {
+                SetProperty(ref _cardNameInput, value);
+                UpdateOKbuttonAvailability();
+            }
+        }
+
+        private void UpdateOKbuttonAvailability()
+        {
+            if (string.IsNullOrWhiteSpace(CardNameInput))
+                OkButtonAvailable = false;
+            else
+                OkButtonAvailable = true;
+            OnPropertyChanged("OkButtonAvailable");
+        }
+
+        private void Cancel(IDialogWindow window) => CloseDialogWithResult(window, (null, null), false);
+
+        private void OK(IDialogWindow window) => CloseDialogWithResult(window, (CardNameInput, MoneyAmountInput), true);
     }
 }

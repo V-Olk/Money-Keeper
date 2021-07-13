@@ -12,16 +12,13 @@ namespace VOlkin
 {
     public class PaymentType : NotifyPropertyChanged
     {
-        private PaymentType()
-        { }
+        private PaymentType() { }
 
         public PaymentType(string ptn, decimal moneyAmount)
         {
             PaymentTypeName = ptn;
             MoneyAmount = moneyAmount;
         }
-
-        public override string ToString() => PaymentTypeName;
 
         [Key]
         public int PaymentTypeId { get; private set; }
@@ -33,8 +30,6 @@ namespace VOlkin
         public bool IsClosed { get; private set; } = false;
 
         //public Banks BankFk { get; set; }
-
-        public void Close() => IsClosed = true;
 
         public static PaymentType operator +(PaymentType pt, decimal moneyAmount)
         {
@@ -49,5 +44,18 @@ namespace VOlkin
             return pt;
         }
 
+        public void Close() => IsClosed = true;
+
+        public void Increase(decimal moneyAmount)
+        {
+            MoneyAmount += moneyAmount;
+        }
+
+        public void Decrease(decimal moneyAmount)
+        {
+            MoneyAmount -= moneyAmount;
+        }
+
+        public override string ToString() => PaymentTypeName;
     }
 }

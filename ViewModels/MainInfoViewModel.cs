@@ -25,9 +25,37 @@ namespace VOlkin.ViewModels
 {
     public class MainInfoViewModel : ViewModelBase
     {
-        private static readonly IDialogService _dialogService = new DialogService();
+        private ChangeTimePeriod _setCurTimePeriod;
+
+        private RelayCommand _addCategoryCommand;
+        private RelayCommand<Category> _removeCategoryCommand;
+        private RelayCommand _addTransactionCommand;
+        private RelayCommand<PaymentType> _closeCardCommand;
+        private RelayCommand _addCardCommand;
+
+        public MainInfoViewModel()
+        {
+            DbContext.PaymentTypes.Where(pt => pt.IsClosed == false).Load();
+
+            DbContext.Categories.Load();
+
+            PaymentTypes.CollectionChanged += (s, e) => { OnPropertyChanged("TotalMoney"); };
+
+            SetCurTimePeriod = TimePeriods[0];
+        }
 
         public static DatabaseContext DbContext { get; } = new DatabaseContext();
+        public static DateTime StartDate { get; set; }
+        public static DateTime EndDate { get; set; } = DateTime.MaxValue;
+
+        public decimal TotalMoney
+        {
+            get
+            {
+                return PaymentTypes?.Sum(pt => pt.MoneyAmount) ?? 0;
+            }
+        }
+
         public ObservableCollection<PaymentType> PaymentTypes { get; set; } = DbContext.PaymentTypes.Local;
         public ObservableCollection<Category> Categories { get; set; } = DbContext.Categories.Local;
         public ObservableCollection<Transaction> Transactions { get; set; } = DbContext.Transactions.Local;
@@ -42,17 +70,6 @@ namespace VOlkin.ViewModels
             new ChangeTimePeriod("Свой период", ChangeTimePeriodToCustom)
         };
 
-        public decimal TotalMoney
-        {
-            get
-            {
-                return PaymentTypes?.Sum(pt => pt.MoneyAmount) ?? 0;
-            }
-        }
-        public static DateTime StartDate { get; set; }
-        public static DateTime EndDate { get; set; } = DateTime.MaxValue;
-
-        private ChangeTimePeriod _setCurTimePeriod;
         public ChangeTimePeriod SetCurTimePeriod
         {
             get => _setCurTimePeriod;
@@ -67,66 +84,54 @@ namespace VOlkin.ViewModels
             }
         }
 
-        public MainInfoViewModel()
-        {
-            DbContext.PaymentTypes.Where(pt => pt.IsClosed == false).Load();
+        private static IDialogService DialogService { get; } = new DialogService();
 
-            DbContext.Categories.Load();
-
-            PaymentTypes.CollectionChanged += (s, e) => { OnPropertyChanged("TotalMoney"); };
-
-            SetCurTimePeriod = TimePeriods[0];
-        }
-
-        #region AddCategory
-
-        private RelayCommand _addCategoryCommand;
         public RelayCommand AddCategoryCommand => _addCategoryCommand ??= new RelayCommand(AddCategory);
+        public RelayCommand AddCardCommand => _addCardCommand ??= new RelayCommand(AddCard);
+        public RelayCommand<Category> RemoveCategoryCommand => _removeCategoryCommand ??= new RelayCommand<Category>(RemoveCategory);
+        public RelayCommand AddTransactionCommand => _addTransactionCommand ??= new RelayCommand(AddTransaction);
+        public RelayCommand<PaymentType> CloseCardCommand => _closeCardCommand ??= new RelayCommand<PaymentType>(CloseCard);
+
+        #region ChangeTimePeriodMethods
+        private static bool ChangeTimePeriodToDay() { StartDate = DateTime.Today; EndDate = DateTime.MaxValue; return true; }
+        private static bool ChangeTimePeriodToWeek() { StartDate = DateTime.Today.FirstDayOfWeek(DayOfWeek.Monday); EndDate = DateTime.MaxValue; return true; }
+        private static bool ChangeTimePeriodToMonth() { StartDate = DateTime.Today.FirstDayOfMonth(); EndDate = DateTime.MaxValue; return true; }
+        private static bool ChangeTimePeriodToYear() { StartDate = DateTime.Today.FirstDayOfYear(); EndDate = DateTime.MaxValue; return true; }
+        private static bool ChangeTimePeriodToAllTime() { StartDate = DateTime.MinValue; EndDate = DateTime.MaxValue; return true; }
+        private static bool ChangeTimePeriodToCustom()
+        {
+            if (!DialogService.OpenDialog(new ReadTwoDatesViewModel("Выбор периода времени", StartDate, EndDate), out var readTwoDatesRes))
+                return false;
+
+            StartDate = readTwoDatesRes.Item1;
+            EndDate = readTwoDatesRes.Item2;
+
+            return true;
+        }
+        #endregion
 
         private void AddCategory()
         {
             throw new NotImplementedException();
         }
 
-        #endregion
-
-        #region RemoveCategoryCommand
-        private RelayCommand<Category> _removeCategoryCommand;
-        public RelayCommand<Category> RemoveCategoryCommand => _removeCategoryCommand ??= new RelayCommand<Category>(RemoveCategory);
-
         private void RemoveCategory(Category paymentType)
         {
             throw new NotImplementedException();
         }
-        #endregion
-
-        #region AddTransaction
-
-        private RelayCommand _addTransactionCommand;
-        public RelayCommand AddTransactionCommand => _addTransactionCommand ??= new RelayCommand(AddTransaction);
 
         private void AddTransaction()
         {
-            var dialog = new AddTransactionViewModel("Добавление новой транзакции", PaymentTypes, Categories);
-            var dialogRes = _dialogService.OpenDialog(dialog);
-
-            if (dialogRes == null)
+            if (!DialogService.OpenDialog(new AddTransactionViewModel("Добавление новой транзакции", PaymentTypes, Categories), out var dialogRes))
                 return;
 
             DbContext.Transactions.Add(dialogRes);
 
-            PaymentType pt = dialogRes.PaymentTypeFk;
-            pt -= dialogRes.Price;
+            dialogRes.PaymentTypeFk.Increase(dialogRes.Price);
 
             DbContext.SaveChanges();
             OnPropertyChanged("TotalMoney");
         }
-
-        #endregion
-
-        #region ClosePaymentType
-        private RelayCommand<PaymentType> _closeCardCommand;
-        public RelayCommand<PaymentType> CloseCardCommand => _closeCardCommand ??= new RelayCommand<PaymentType>(CloseCard);
 
         private async void CloseCard(PaymentType paymentType)
         {
@@ -145,18 +150,10 @@ namespace VOlkin.ViewModels
 
             DbContext.Entry(paymentType).State = EntityState.Detached;
         }
-        #endregion
-
-        #region AddPaymentType
-
-        private RelayCommand _addCardCommand;
-        public RelayCommand AddCardCommand => _addCardCommand ??= new RelayCommand(AddCard);
 
         private async void AddCard()
         {
-            var addCardDialog = new AddCardDialogViewModel("Добавление нового счета");
-            var addCardDialogRes = _dialogService.OpenDialog(addCardDialog);
-            if (addCardDialogRes.Item1 == null || addCardDialogRes.Item2 == null)
+            if (!DialogService.OpenDialog(new AddCardDialogViewModel("Добавление нового счета"), out var addCardDialogRes))
                 return;
 
             if (!decimal.TryParse(addCardDialogRes.Item2, out decimal moneyAmount))
@@ -175,33 +172,9 @@ namespace VOlkin.ViewModels
                 return;
             }
 
-            PaymentType newPT = new(addCardDialogRes.Item1, moneyAmount);
-
-            DbContext.PaymentTypes.Add(newPT);
+            DbContext.PaymentTypes.Add(new PaymentType(addCardDialogRes.Item1, moneyAmount));
             DbContext.SaveChanges();
         }
-
-        #endregion
-
-        #region ChangeTimePeriodMethods
-        private static bool ChangeTimePeriodToDay() { StartDate = DateTime.Today; EndDate = DateTime.MaxValue; return true; }
-        private static bool ChangeTimePeriodToWeek() { StartDate = DateTime.Today.FirstDayOfWeek(DayOfWeek.Monday); EndDate = DateTime.MaxValue; return true; }
-        private static bool ChangeTimePeriodToMonth() { StartDate = DateTime.Today.FirstDayOfMonth(); EndDate = DateTime.MaxValue; return true; }
-        private static bool ChangeTimePeriodToYear() { StartDate = DateTime.Today.FirstDayOfYear(); EndDate = DateTime.MaxValue; return true; }
-        private static bool ChangeTimePeriodToAllTime() { StartDate = DateTime.MinValue; EndDate = DateTime.MaxValue; return true; }
-        private static bool ChangeTimePeriodToCustom()
-        {
-            var readTwoDatesDialog = new ReadTwoDatesViewModel("Выбор периода времени", StartDate, EndDate);
-            var readTwoDatesRes = _dialogService.OpenDialog(readTwoDatesDialog);
-            if (readTwoDatesRes.Item1 == DateTime.MinValue && readTwoDatesRes.Item2 == DateTime.MinValue)
-                return false;
-
-            StartDate = readTwoDatesRes.Item1;
-            EndDate = readTwoDatesRes.Item2;
-
-            return true;
-        }
-        #endregion
 
         private void LoadTransactions()
         {

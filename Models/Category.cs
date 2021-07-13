@@ -9,11 +9,12 @@ namespace VOlkin
 {
     public class Category
     {
-        public override string ToString() => CategoryName;
-
         [Key]
         public int CategoryId { get; private set; }
         [Required]
         public string CategoryName { get; private set; }
+        public override string ToString() => CategoryName;
+        
+        //TODO: Добавить enum с типом транзакции доход/расход
     }
 }
