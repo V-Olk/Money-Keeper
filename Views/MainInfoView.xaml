@@ -42,6 +42,18 @@
             </Grid>
         </DataTemplate>
 
+        <DataTemplate x:Key="CategoriesTemplate">
+            <Grid HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="{Binding CategoryName}" Grid.Column="0"/>
+            </Grid>
+        </DataTemplate>
+
         <ControlTemplate x:Key="NoScroll">
             <ItemsPresenter></ItemsPresenter>
         </ControlTemplate>
@@ -50,9 +62,9 @@
     <ScrollViewer>
         <StackPanel Margin="10">
 
-            <!--PaymentTypes-->
+            <!--Region PaymentTypes-->
             <Expander>
-                
+
                 <Expander.Header>
                     <Grid  HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
                         <Grid.ColumnDefinitions>
@@ -61,15 +73,11 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="Счета" Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="Счета" Grid.Column="0" VerticalAlignment="Center"/>
 
-                        </TextBlock>
+                        <TextBlock Text="{Binding Path=TotalMoney, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalAlignment="Center"/>
 
-                        <TextBlock Text="{Binding Path=TotalMoney, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalAlignment="Center">
-
-                        </TextBlock>
-
-                        <Button Grid.Column="2" Command="{Binding AddCardCommand}" Margin="75 0 0 0">
+                        <Button Grid.Column="2" Command="{Binding AddCardCommand}" Width="50" HorizontalAlignment="Right">
                             <materialDesign:PackIcon Kind="CreditCardPlusOutline" />
                         </Button>
 
@@ -80,26 +88,70 @@
                          ItemsSource="{Binding PaymentTypes}"
                          ItemTemplate="{StaticResource PaymentTypesTemplate}"
                          Template="{StaticResource NoScroll}">
-                    
+
                     <ListBox.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Закрыть счет"
                                       Command="{Binding CloseCardCommand}"
                                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}},
                                                                   Path=PlacementTarget.SelectedItem}">
-                                
-                                <!--<MenuItem.Icon>
-                                    <Image Source="/WpfTutorialSamples;component/Images/cut.png" />
-                                </MenuItem.Icon>-->
+
+                                <MenuItem.Icon>
+                                    <materialDesign:PackIcon Kind="CreditCardRemoveOutline" />
+                                </MenuItem.Icon>
                             </MenuItem>
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>
-                
-            </Expander>
 
-            <!--Transactions-->
-            <Grid HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
+            </Expander>
+            <!--EndRegion-->
+
+            <!--Region Categories-->
+            <Expander>
+
+                <Expander.Header>
+                    <Grid  HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Категории" Grid.Column="0" VerticalAlignment="Center"/>
+
+                        <Button Grid.Column="2" Command="{Binding AddCategoryCommand}" Width="50" HorizontalAlignment="Right">
+                            <materialDesign:PackIcon Kind="ShapePlus" />
+                        </Button>
+
+                    </Grid>
+                </Expander.Header>
+
+                <ListView x:Name="CategoriesListBox"
+                         ItemsSource="{Binding Categories}"
+                         ItemTemplate="{StaticResource CategoriesTemplate}"
+                         Template="{StaticResource NoScroll}">
+
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Удалить категорию"
+                                      Command="{Binding RemoveCategoryCommand}"
+                                       CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}},
+                                                                  Path=PlacementTarget.SelectedItem}">
+
+                                <MenuItem.Icon>
+                                    <materialDesign:PackIcon Kind="Delete" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                </ListView>
+
+            </Expander>
+            <!--EndRegion-->
+
+            <!--Region Transactions-->
+            <Grid Margin="0 10 0 0" HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -126,16 +178,19 @@
                     </ComboBox>
                 </StackPanel>
 
-                <Button Grid.Column="2" HorizontalAlignment="Right" Command="{Binding AddTransactionCommand}">
+                <Button Grid.Column="2" HorizontalAlignment="Right" Command="{Binding AddTransactionCommand}" Width="50" Margin="0 0 64 0">
                     <materialDesign:PackIcon Kind="Plus"/>
                 </Button>
             </Grid>
 
             <ListView ItemsSource="{Binding Transactions}"
                       ItemTemplate="{StaticResource TransactionsTemplate}"
-                      Template="{StaticResource NoScroll}"/> <!--for correct global scroll work-->
+                      Template="{StaticResource NoScroll}"/>
+
+            <!--EndRegion-->
 
         </StackPanel>
+
     </ScrollViewer>
 
 </UserControl>

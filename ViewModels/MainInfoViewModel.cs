@@ -78,6 +78,28 @@ namespace VOlkin.ViewModels
             SetCurTimePeriod = TimePeriods[0];
         }
 
+        #region AddCategory
+
+        private RelayCommand _addCategoryCommand;
+        public RelayCommand AddCategoryCommand => _addCategoryCommand ??= new RelayCommand(AddCategory);
+
+        private void AddCategory()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region RemoveCategoryCommand
+        private RelayCommand<Category> _removeCategoryCommand;
+        public RelayCommand<Category> RemoveCategoryCommand => _removeCategoryCommand ??= new RelayCommand<Category>(RemoveCategory);
+
+        private void RemoveCategory(Category paymentType)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
         #region AddTransaction
 
         private RelayCommand _addTransactionCommand;
@@ -104,9 +126,9 @@ namespace VOlkin.ViewModels
 
         #region ClosePaymentType
         private RelayCommand<PaymentType> _closeCardCommand;
-        public RelayCommand<PaymentType> CloseCardCommand => _closeCardCommand ??= new RelayCommand<PaymentType>(RemoveCard);
+        public RelayCommand<PaymentType> CloseCardCommand => _closeCardCommand ??= new RelayCommand<PaymentType>(CloseCard);
 
-        private async void RemoveCard(PaymentType paymentType)
+        private async void CloseCard(PaymentType paymentType)
         {
             QuestionDialogView view = new()
             {
