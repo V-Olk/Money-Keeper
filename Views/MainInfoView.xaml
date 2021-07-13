@@ -41,6 +41,10 @@
                 <TextBlock Text="{Binding DateTime}" Grid.Column="2"/>
             </Grid>
         </DataTemplate>
+
+        <ControlTemplate x:Key="NoScroll">
+            <ItemsPresenter></ItemsPresenter>
+        </ControlTemplate>
     </UserControl.Resources>
 
     <ScrollViewer>
@@ -48,6 +52,7 @@
 
             <!--PaymentTypes-->
             <Expander>
+                
                 <Expander.Header>
                     <Grid  HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
                         <Grid.ColumnDefinitions>
@@ -71,7 +76,11 @@
                     </Grid>
                 </Expander.Header>
 
-                <ListBox x:Name="PaymenTypesListBox" ItemsSource="{Binding PaymentTypes}" ItemTemplate="{StaticResource PaymentTypesTemplate}">
+                <ListBox x:Name="PaymenTypesListBox"
+                         ItemsSource="{Binding PaymentTypes}"
+                         ItemTemplate="{StaticResource PaymentTypesTemplate}"
+                         Template="{StaticResource NoScroll}">
+                    
                     <ListBox.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Закрыть счет"
@@ -86,6 +95,7 @@
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>
+                
             </Expander>
 
             <!--Transactions-->
@@ -93,12 +103,10 @@
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="2*"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                
-                
                 <StackPanel  HorizontalAlignment="Center" Orientation="Horizontal" Grid.Column="1">
                     <TextBlock Text="Доходы и расходы за "
                                        HorizontalAlignment="Center"
@@ -124,7 +132,8 @@
             </Grid>
 
             <ListView ItemsSource="{Binding Transactions}"
-                      ItemTemplate="{StaticResource TransactionsTemplate}"/>
+                      ItemTemplate="{StaticResource TransactionsTemplate}"
+                      Template="{StaticResource NoScroll}"/> <!--for correct global scroll work-->
 
         </StackPanel>
     </ScrollViewer>
