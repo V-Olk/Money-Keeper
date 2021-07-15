@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using VOlkin.Dialogs.Service;
+using VOlkin.HelpClasses.Enums;
 
 namespace VOlkin.Dialogs.AddTransaction
 {
@@ -47,7 +48,7 @@ namespace VOlkin.Dialogs.AddTransaction
                 return;
             }
 
-            Transaction transaction = new(Category, Coment, DatTime, price, PaymentType, 0);
+            Transaction transaction = new(Category, Coment, DatTime, price, PaymentType, TransactionTypeEnum.Expense);
 
             CloseDialogWithResult(window, transaction, true);
         }

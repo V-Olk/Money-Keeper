@@ -12,13 +12,14 @@ namespace VOlkin
 {
     public class PaymentType : NotifyPropertyChanged
     {
-        private PaymentType() { }
 
         public PaymentType(string ptn, decimal moneyAmount)
         {
             PaymentTypeName = ptn;
             MoneyAmount = moneyAmount;
         }
+
+        private PaymentType() { }
 
         [Key]
         public int PaymentTypeId { get; private set; }

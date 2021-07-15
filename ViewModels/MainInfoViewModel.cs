@@ -20,6 +20,7 @@ using MaterialDesignThemes.Wpf;
 using VOlkin.Dialogs.QuestionDialog;
 using VOlkin.Dialogs.AddTransaction;
 using System.Collections.Specialized;
+using VOlkin.Dialogs.AddCategory;
 
 namespace VOlkin.ViewModels
 {
@@ -41,7 +42,7 @@ namespace VOlkin.ViewModels
 
             PaymentTypes.CollectionChanged += (s, e) => { OnPropertyChanged("TotalMoney"); };
 
-            SetCurTimePeriod = TimePeriods[0];
+            SetCurTimePeriod = TimePeriods.FirstOrDefault();
         }
 
         public static DatabaseContext DbContext { get; } = new DatabaseContext();
@@ -110,9 +111,21 @@ namespace VOlkin.ViewModels
         }
         #endregion
 
-        private void AddCategory()
+        private async void AddCategory()
         {
-            throw new NotImplementedException();
+            if (!DialogService.OpenDialog(new AddCategoryDialogVM("Добавление новой категории"), out var addCategoryDialogRes))
+                return;
+
+            if (DbContext.Categories.FirstOrDefault(ct => ct.CategoryType == addCategoryDialogRes.CategoryType && ct.CategoryName == addCategoryDialogRes.CategoryName) != null)
+            {
+                var metroWindow = Application.Current.MainWindow as MetroWindow;
+                await metroWindow.ShowMessageAsync("Ошибка", "Категория с таким наименованием уже существует");
+
+                return;
+            }
+
+            DbContext.Categories.Add(addCategoryDialogRes);
+            DbContext.SaveChanges();
         }
 
         private void RemoveCategory(Category paymentType)

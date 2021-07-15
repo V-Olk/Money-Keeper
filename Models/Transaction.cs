@@ -4,23 +4,23 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VOlkin.HelpClasses.Enums;
 using VOlkin.ViewModels;
 
 namespace VOlkin
 {
     public class Transaction
     {
-        private Transaction() { }
-
-        public Transaction(Category category, string comment, DateTime dateTime, decimal price, PaymentType paymentType, int transactionType)
+        public Transaction(Category category, string comment, DateTime dateTime, decimal price, PaymentType paymentType, TransactionTypeEnum transactionTypeEnum)
         {
             CategoryFk = category;
             Comment = comment;
             DateTime = dateTime;
             Price = price;
             PaymentTypeFk = paymentType;
-            TransactionType = transactionType;
+            TransactionType = transactionTypeEnum;
         }
+        private Transaction() { }
 
         [Key]
         public int TransactionId { get; private set; }
@@ -29,13 +29,13 @@ namespace VOlkin
         public DateTime DateTime { get; private set; }
         [Required]
         public decimal Price { get; private set; }
-        public string Comment { get; private set; }
         [Required]
-        public int TransactionType { get; private set; }
+        public TransactionTypeEnum TransactionType { get; private set; }
         [Required]
         public Category CategoryFk { get; private set; }
         [Required]
         public PaymentType PaymentTypeFk { get; private set; }
+        public string Comment { get; private set; }
 
     }
 }

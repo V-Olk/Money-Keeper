@@ -99,10 +99,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Dialogs\AddCategory\AddCategoryView.xaml.cs">
-      <DependentUpon>AddCategoryView.xaml</DependentUpon>
+    <Compile Include="Dialogs\AddCategory\AddCategoryDialogView.xaml.cs">
+      <DependentUpon>AddCategoryDialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\AddCategory\AddCategoryVM.cs" />
+    <Compile Include="Dialogs\AddCategory\AddCategoryDialogVM.cs" />
     <Compile Include="Dialogs\AddTransaction\AddTransactionView.xaml.cs">
       <DependentUpon>AddTransactionView.xaml</DependentUpon>
     </Compile>
@@ -116,6 +116,8 @@
     </Compile>
     <Compile Include="Dialogs\ReadTwoDates\ReadTwoDatesViewModel.cs" />
     <Compile Include="HelpClasses\ChangeTimePeriod.cs" />
+    <Compile Include="HelpClasses\Enums\CategoryTypeEnum.cs" />
+    <Compile Include="HelpClasses\Enums\TransactionTypeEnum.cs" />
     <Compile Include="HelpClasses\NotifyPropertyChanged.cs" />
     <Compile Include="ThemeModifier.cs" />
     <Compile Include="ViewModels\InvestmentsViewModel.cs" />
@@ -130,7 +132,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialogs\AddCategory\AddCategoryView.xaml">
+    <Page Include="Dialogs\AddCategory\AddCategoryDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
