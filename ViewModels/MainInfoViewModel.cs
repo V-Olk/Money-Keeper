@@ -39,8 +39,6 @@ namespace VOlkin.ViewModels
         private RelayCommand<StateSupport> _removeStateSupportObjCommand;
         private RelayCommand<Transaction> _removeTransactionCommand;
 
-
-
         public MainInfoViewModel()
         {
             DbContext.PaymentTypes.Where(pt => pt.State == StatesEnum.Active).Load();
@@ -224,8 +222,6 @@ namespace VOlkin.ViewModels
 
             DbContext.Entry(transaction).State = EntityState.Deleted;
             DbContext.SaveChanges();
-
-            //DbContext.Entry(transaction).State = EntityState.Detached;
         }
 
         private void LoadTransactions()

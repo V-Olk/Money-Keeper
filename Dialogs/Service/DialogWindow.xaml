@@ -9,8 +9,9 @@
       Title="{Binding Title}"
       Height="240"
       Width="600"
-      ResizeMode="NoResize">
+      ResizeMode="NoResize"
+      BorderBrush="MidnightBlue">
 
-    <ContentControl x:Name="ContentPresenter" Content="{Binding}"/>
+    <ContentControl FontSize="16" x:Name="ContentPresenter" Content="{Binding}" VerticalAlignment="Center"/>
 
 </controls:MetroWindow>
