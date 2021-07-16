@@ -7,12 +7,12 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using VOlkin.HelpClasses;
+using VOlkin.Models;
 
 namespace VOlkin
 {
-    public class PaymentType : NotifyPropertyChanged
+    public class PaymentType : StateSupport
     {
-
         public PaymentType(string ptn, decimal moneyAmount)
         {
             PaymentTypeName = ptn;
@@ -27,8 +27,6 @@ namespace VOlkin
         public string PaymentTypeName { get; private set; }
         [Required]
         public decimal MoneyAmount { get; private set; }
-        [Required]
-        public bool IsClosed { get; private set; } = false;
 
         //public Banks BankFk { get; set; }
 
@@ -45,16 +43,16 @@ namespace VOlkin
             return pt;
         }
 
-        public void Close() => IsClosed = true;
-
         public void Increase(decimal moneyAmount)
         {
             MoneyAmount += moneyAmount;
+            OnPropertyChanged("MoneyAmount");
         }
 
         public void Decrease(decimal moneyAmount)
         {
             MoneyAmount -= moneyAmount;
+            OnPropertyChanged("MoneyAmount");
         }
 
         public override string ToString() => PaymentTypeName;

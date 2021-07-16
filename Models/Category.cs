@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VOlkin.HelpClasses.Enums;
+using VOlkin.Models;
 
 namespace VOlkin
 {
-    public class Category
+    public class Category : StateSupport
     {
         public Category(string categoryName, CategoryTypeEnum categoryTypeEnum)
         {

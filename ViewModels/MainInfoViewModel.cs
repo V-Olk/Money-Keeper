@@ -21,6 +21,7 @@ using VOlkin.Dialogs.QuestionDialog;
 using VOlkin.Dialogs.AddTransaction;
 using System.Collections.Specialized;
 using VOlkin.Dialogs.AddCategory;
+using VOlkin.HelpClasses.Enums;
 
 namespace VOlkin.ViewModels
 {
@@ -36,9 +37,9 @@ namespace VOlkin.ViewModels
 
         public MainInfoViewModel()
         {
-            DbContext.PaymentTypes.Where(pt => pt.IsClosed == false).Load();
+            DbContext.PaymentTypes.Where(pt => pt.State == StatesEnum.Active).Load();
 
-            DbContext.Categories.Load();
+            DbContext.Categories.Where(ct => ct.State == StatesEnum.Active).Load();
 
             PaymentTypes.CollectionChanged += (s, e) => { OnPropertyChanged("TotalMoney"); };
 
@@ -128,9 +129,22 @@ namespace VOlkin.ViewModels
             DbContext.SaveChanges();
         }
 
-        private void RemoveCategory(Category paymentType)
+        private async void RemoveCategory(Category category)
         {
-            throw new NotImplementedException();
+            QuestionDialogView view = new()
+            {
+                DataContext = new QuestionDialogViewModel($"Вы действительно хотите удалить Категорию \"{category}\"?{Environment.NewLine}" +
+                $"Ее нельзя будет восстановить в настройках")
+            };
+
+            var result = await DialogHost.Show(view, "RootDialog");
+            if ((bool)result == false)
+                return;
+
+            category.Delete();
+            DbContext.SaveChanges();
+
+            DbContext.Entry(category).State = EntityState.Detached;
         }
 
         private void AddTransaction()
@@ -140,7 +154,7 @@ namespace VOlkin.ViewModels
 
             DbContext.Transactions.Add(dialogRes);
 
-            dialogRes.PaymentTypeFk.Increase(dialogRes.Price);
+            dialogRes.PaymentTypeFk.Decrease(dialogRes.Price);
 
             DbContext.SaveChanges();
             OnPropertyChanged("TotalMoney");
@@ -150,7 +164,7 @@ namespace VOlkin.ViewModels
         {
             QuestionDialogView view = new()
             {
-                DataContext = new QuestionDialogViewModel($"Вы действительно хотите закрыть счет \"{paymentType.PaymentTypeName}\"?{Environment.NewLine}" +
+                DataContext = new QuestionDialogViewModel($"Вы действительно хотите закрыть счет \"{paymentType}\"?{Environment.NewLine}" +
                 $"Вы всегда сможете восстановить его в настройках")
             };
 
