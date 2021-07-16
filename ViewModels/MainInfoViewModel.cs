@@ -22,6 +22,7 @@ using VOlkin.Dialogs.AddTransaction;
 using System.Collections.Specialized;
 using VOlkin.Dialogs.AddCategory;
 using VOlkin.HelpClasses.Enums;
+using VOlkin.Models;
 
 namespace VOlkin.ViewModels
 {
@@ -29,11 +30,16 @@ namespace VOlkin.ViewModels
     {
         private ChangeTimePeriod _setCurTimePeriod;
 
-        private RelayCommand _addCategoryCommand;
-        private RelayCommand<Category> _removeCategoryCommand;
-        private RelayCommand _addTransactionCommand;
-        private RelayCommand<PaymentType> _closeCardCommand;
         private RelayCommand _addCardCommand;
+        private RelayCommand _addCategoryCommand;
+        private RelayCommand _addTransactionCommand;
+
+        private RelayCommand<StateSupport> _closeStateSupportObjCommand;
+
+        private RelayCommand<StateSupport> _removeStateSupportObjCommand;
+        private RelayCommand<Transaction> _removeTransactionCommand;
+
+
 
         public MainInfoViewModel()
         {
@@ -88,11 +94,13 @@ namespace VOlkin.ViewModels
 
         private static IDialogService DialogService { get; } = new DialogService();
 
-        public RelayCommand AddCategoryCommand => _addCategoryCommand ??= new RelayCommand(AddCategory);
-        public RelayCommand AddCardCommand => _addCardCommand ??= new RelayCommand(AddCard);
-        public RelayCommand<Category> RemoveCategoryCommand => _removeCategoryCommand ??= new RelayCommand<Category>(RemoveCategory);
-        public RelayCommand AddTransactionCommand => _addTransactionCommand ??= new RelayCommand(AddTransaction);
-        public RelayCommand<PaymentType> CloseCardCommand => _closeCardCommand ??= new RelayCommand<PaymentType>(CloseCard);
+        public RelayCommand AddCardCommand => _addCardCommand ??= new(AddCard);
+        public RelayCommand AddCategoryCommand => _addCategoryCommand ??= new(AddCategory);
+        public RelayCommand AddTransactionCommand => _addTransactionCommand ??= new(AddTransaction);
+
+        public RelayCommand<StateSupport> CloseStateSupportObjCommand => _closeStateSupportObjCommand ??= new(CloseStateSupportObj);
+        public RelayCommand<StateSupport> RemoveStateSupportObjCommand => _removeStateSupportObjCommand ??= new(RemoveStateSupportObj);
+        public RelayCommand<Transaction> RemoveTransactionCommand => _removeTransactionCommand ??= new(RemoveTransaction);
 
         #region ChangeTimePeriodMethods
         private static bool ChangeTimePeriodToDay() { StartDate = DateTime.Today; EndDate = DateTime.MaxValue; return true; }
@@ -111,72 +119,6 @@ namespace VOlkin.ViewModels
             return true;
         }
         #endregion
-
-        private async void AddCategory()
-        {
-            if (!DialogService.OpenDialog(new AddCategoryDialogVM("Добавление новой категории"), out var addCategoryDialogRes))
-                return;
-
-            if (DbContext.Categories.FirstOrDefault(ct => ct.CategoryType == addCategoryDialogRes.CategoryType && ct.CategoryName == addCategoryDialogRes.CategoryName) != null)
-            {
-                var metroWindow = Application.Current.MainWindow as MetroWindow;
-                await metroWindow.ShowMessageAsync("Ошибка", "Категория с таким наименованием уже существует");
-
-                return;
-            }
-
-            DbContext.Categories.Add(addCategoryDialogRes);
-            DbContext.SaveChanges();
-        }
-
-        private async void RemoveCategory(Category category)
-        {
-            QuestionDialogView view = new()
-            {
-                DataContext = new QuestionDialogViewModel($"Вы действительно хотите удалить Категорию \"{category}\"?{Environment.NewLine}" +
-                $"Ее нельзя будет восстановить в настройках")
-            };
-
-            var result = await DialogHost.Show(view, "RootDialog");
-            if ((bool)result == false)
-                return;
-
-            category.Delete();
-            DbContext.SaveChanges();
-
-            DbContext.Entry(category).State = EntityState.Detached;
-        }
-
-        private void AddTransaction()
-        {
-            if (!DialogService.OpenDialog(new AddTransactionViewModel("Добавление новой транзакции", PaymentTypes, Categories), out var dialogRes))
-                return;
-
-            DbContext.Transactions.Add(dialogRes);
-
-            dialogRes.PaymentTypeFk.Decrease(dialogRes.Price);
-
-            DbContext.SaveChanges();
-            OnPropertyChanged("TotalMoney");
-        }
-
-        private async void CloseCard(PaymentType paymentType)
-        {
-            QuestionDialogView view = new()
-            {
-                DataContext = new QuestionDialogViewModel($"Вы действительно хотите закрыть счет \"{paymentType}\"?{Environment.NewLine}" +
-                $"Вы всегда сможете восстановить его в настройках")
-            };
-
-            var result = await DialogHost.Show(view, "RootDialog");
-            if ((bool)result == false)
-                return;
-
-            paymentType.Close();
-            DbContext.SaveChanges();
-
-            DbContext.Entry(paymentType).State = EntityState.Detached;
-        }
 
         private async void AddCard()
         {
@@ -201,6 +143,89 @@ namespace VOlkin.ViewModels
 
             DbContext.PaymentTypes.Add(new PaymentType(addCardDialogRes.Item1, moneyAmount));
             DbContext.SaveChanges();
+        }
+
+        private async void AddCategory()
+        {
+            if (!DialogService.OpenDialog(new AddCategoryDialogVM("Добавление новой категории"), out var addCategoryDialogRes))
+                return;
+
+            if (DbContext.Categories.FirstOrDefault(ct => ct.CategoryType == addCategoryDialogRes.CategoryType && ct.CategoryName == addCategoryDialogRes.CategoryName) != null)
+            {
+                var metroWindow = Application.Current.MainWindow as MetroWindow;
+                await metroWindow.ShowMessageAsync("Ошибка", "Категория с таким наименованием уже существует");
+
+                return;
+            }
+
+            DbContext.Categories.Add(addCategoryDialogRes);
+            DbContext.SaveChanges();
+        }
+
+        private void AddTransaction()
+        {
+            if (!DialogService.OpenDialog(new AddTransactionViewModel("Добавление новой транзакции", PaymentTypes, Categories), out var dialogRes))
+                return;
+
+            DbContext.Transactions.Add(dialogRes);
+
+            dialogRes.PaymentTypeFk.Decrease(dialogRes.Price);
+
+            DbContext.SaveChanges();
+            OnPropertyChanged("TotalMoney");
+        }
+
+        private async void CloseStateSupportObj(StateSupport stateSupportobj)
+        {
+            QuestionDialogView view = new()
+            {
+                DataContext = new QuestionDialogViewModel($"Вы действительно хотите закрыть \"{stateSupportobj}\"?{Environment.NewLine}" +
+                $"Вы всегда сможете восстановить его в настройках")
+            };
+
+            var result = await DialogHost.Show(view, "RootDialog");
+            if ((bool)result == false)
+                return;
+
+            stateSupportobj.Close();
+            DbContext.SaveChanges();
+
+            DbContext.Entry(stateSupportobj).State = EntityState.Detached;
+        }
+
+        private async void RemoveStateSupportObj(StateSupport stateSupportobj)
+        {
+            QuestionDialogView view = new()
+            {
+                DataContext = new QuestionDialogViewModel($"Вы действительно хотите удалить \"{stateSupportobj}\"?{Environment.NewLine}" +
+                $"Ее нельзя будет восстановить в настройках")
+            };
+
+            var result = await DialogHost.Show(view, "RootDialog");
+            if ((bool)result == false)
+                return;
+
+            stateSupportobj.Delete();
+            DbContext.SaveChanges();
+
+            DbContext.Entry(stateSupportobj).State = EntityState.Detached;
+        }
+
+        private async void RemoveTransaction(Transaction transaction)
+        {
+            QuestionDialogView view = new()
+            {
+                DataContext = new QuestionDialogViewModel("Вы действительно хотите удалить эту транзакцию?")
+            };
+
+            var result = await DialogHost.Show(view, "RootDialog");
+            if ((bool)result == false)
+                return;
+
+            DbContext.Entry(transaction).State = EntityState.Deleted;
+            DbContext.SaveChanges();
+
+            //DbContext.Entry(transaction).State = EntityState.Detached;
         }
 
         private void LoadTransactions()
