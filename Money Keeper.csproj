@@ -116,9 +116,11 @@
     </Compile>
     <Compile Include="Dialogs\ReadTwoDates\ReadTwoDatesViewModel.cs" />
     <Compile Include="HelpClasses\ChangeTimePeriod.cs" />
+    <Compile Include="HelpClasses\EnumConverter.cs" />
     <Compile Include="HelpClasses\Enums\CategoryTypeEnum.cs" />
     <Compile Include="HelpClasses\Enums\StatesEnum.cs" />
     <Compile Include="HelpClasses\Enums\TransactionTypeEnum.cs" />
+    <Compile Include="HelpClasses\GridViewSort.cs" />
     <Compile Include="HelpClasses\NotifyPropertyChanged.cs" />
     <Compile Include="Models\StateSupport.cs" />
     <Compile Include="ThemeModifier.cs" />

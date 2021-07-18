@@ -5,16 +5,19 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              Background="{DynamicResource MaterialDesignPaper}"
              Foreground="{DynamicResource MaterialDesignBody}"
+             xmlns:help="clr-namespace:VOlkin.HelpClasses"
              xmlns:local="clr-namespace:VOlkin.Views"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
-             >
+             d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
+        
+        <help:EnumConverter x:Key="EnumConverter"/>
+        
         <DataTemplate x:Key="PaymentTypesTemplate">
             <Grid HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
-                
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
@@ -27,26 +30,9 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="TransactionsTemplate">
-            <Grid HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
-                
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Text="{Binding Price}" Grid.Column="0"/>
-
-                <TextBlock Text="{Binding Comment}" Grid.Column="1"/>
-
-                <TextBlock Text="{Binding DateTime}" Grid.Column="2"/>
-            </Grid>
-        </DataTemplate>
-
         <DataTemplate x:Key="CategoriesTemplate">
             <Grid HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
-                
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
@@ -60,6 +46,7 @@
         <ControlTemplate x:Key="NoScroll">
             <ItemsPresenter></ItemsPresenter>
         </ControlTemplate>
+
     </UserControl.Resources>
 
     <ScrollViewer>
@@ -216,9 +203,52 @@
             </Grid>
 
             <ListView ItemsSource="{Binding Transactions}"
-                      ItemTemplate="{StaticResource TransactionsTemplate}"
-                      Template="{StaticResource NoScroll}"
-                      Margin="0 10 0 0">
+                      Margin="0 10 0 0"
+                      help:GridViewSort.AutoSort="True">
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MaterialDesignGridViewItem}">
+
+                        <!--Selected item is not visible-->
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="{x:Null}"/>
+                                <Setter Property="BorderBrush" Value="{x:Null}"/>
+                            </Trigger>
+                        </Style.Triggers>
+
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <ListView.View>
+
+                    <GridView>
+
+                        <GridViewColumn DisplayMemberBinding="{Binding TransactionType, Converter={StaticResource EnumConverter}}"
+                                        Header="Тип"
+                                        help:GridViewSort.PropertyName="TransactionType"
+                                        />
+
+                        <GridViewColumn DisplayMemberBinding="{Binding CategoryFk}"
+                                        Header="Категория"
+                                        help:GridViewSort.PropertyName="CategoryFk"
+                                        />
+
+                        <GridViewColumn DisplayMemberBinding="{Binding Price}"
+                                        Header="Цена"
+                                        help:GridViewSort.PropertyName="CategoryFk"/>
+
+                        <GridViewColumn DisplayMemberBinding="{Binding Comment}"
+                                        Header="Комментарий"
+                                        help:GridViewSort.PropertyName="Comment"/>
+
+                        <GridViewColumn DisplayMemberBinding="{Binding DateTime}"
+                                        Header="Дата"
+                                        help:GridViewSort.PropertyName="DateTime"/>
+
+                    </GridView>
+                    
+                </ListView.View>
 
                 <ListView.ContextMenu>
                     <ContextMenu>

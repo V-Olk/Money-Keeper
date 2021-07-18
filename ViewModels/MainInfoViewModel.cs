@@ -232,7 +232,11 @@ namespace VOlkin.ViewModels
                 x = null;
             });
 
-            DbContext.Transactions.Where(tr => tr.DateTime > StartDate && tr.DateTime <= EndDate).OrderByDescending(tr => tr.DateTime).Load();
+            DbContext.Transactions
+                        .Where(tr => tr.DateTime > StartDate && tr.DateTime <= EndDate)
+                        .Include(tr => tr.CategoryFk)
+                        .OrderByDescending(tr => tr.DateTime).Load();
+
             OnPropertyChanged("Transactions");
         }
     }
