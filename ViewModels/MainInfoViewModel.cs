@@ -118,43 +118,30 @@ namespace VOlkin.ViewModels
         }
         #endregion
 
-        private async void AddCard()
+        private void AddCard()
         {
-            if (!DialogService.OpenDialog(new AddCardDialogViewModel("Добавление нового счета"), out var addCardDialogRes))
+            if (!DialogService.OpenDialog(new AddCardDialogViewModel("Добавление нового счета",
+                                                                     DbContext.PaymentTypes
+                                                                     .Where(pt => pt.State == StatesEnum.Active || pt.State ==  StatesEnum.Closed)
+                                                                     .Select(pt => pt.PaymentTypeName)
+                                                                     .ToHashSet()),                                                                     
+                                                                     out PaymentType newPaymentType))
                 return;
 
-            if (!decimal.TryParse(addCardDialogRes.Item2, out decimal moneyAmount))
-            {
-                var metroWindow = Application.Current.MainWindow as MetroWindow;
-                await metroWindow.ShowMessageAsync("Ошибка", "Не удалось распознать строку кол-ва средств");
-
-                return;
-            }
-
-            if (DbContext.PaymentTypes.FirstOrDefault(pt => pt.PaymentTypeName == addCardDialogRes.Item1) != null)
-            {
-                var metroWindow = Application.Current.MainWindow as MetroWindow;
-                await metroWindow.ShowMessageAsync("Ошибка", "Счет с таким наименованием уже существует");
-
-                return;
-            }
-
-            DbContext.PaymentTypes.Add(new PaymentType(addCardDialogRes.Item1, moneyAmount));
+            DbContext.PaymentTypes.Add(newPaymentType);
             DbContext.SaveChanges();
         }
 
-        private async void AddCategory()
+        private void AddCategory()
         {
-            if (!DialogService.OpenDialog(new AddCategoryDialogVM("Добавление новой категории"), out var addCategoryDialogRes))
+            if (!DialogService.OpenDialog(new AddCategoryDialogVM("Добавление новой категории",
+                                                                   DbContext.Categories
+                                                                     .Where(ct => ct.State == StatesEnum.Active || ct.State == StatesEnum.Closed)
+                                                                     .AsEnumerable()
+                                                                     .Select(ct => (ct.CategoryName, ct.CategoryType))
+                                                                     .ToHashSet()),
+                                                                   out Category addCategoryDialogRes))
                 return;
-
-            if (DbContext.Categories.FirstOrDefault(ct => ct.CategoryType == addCategoryDialogRes.CategoryType && ct.CategoryName == addCategoryDialogRes.CategoryName) != null)
-            {
-                var metroWindow = Application.Current.MainWindow as MetroWindow;
-                await metroWindow.ShowMessageAsync("Ошибка", "Категория с таким наименованием уже существует");
-
-                return;
-            }
 
             DbContext.Categories.Add(addCategoryDialogRes);
             DbContext.SaveChanges();
@@ -167,7 +154,7 @@ namespace VOlkin.ViewModels
 
             DbContext.Transactions.Add(dialogRes);
 
-            dialogRes.PaymentTypeFk.Decrease(dialogRes.Price);
+            dialogRes.PaymentTypeSourceFk.Decrease(dialogRes.Price);
 
             DbContext.SaveChanges();
             OnPropertyChanged("TotalMoney");
@@ -236,6 +223,9 @@ namespace VOlkin.ViewModels
                         .Where(tr => tr.DateTime > StartDate && tr.DateTime <= EndDate)
                         .Include(tr => tr.CategoryFk)
                         .OrderByDescending(tr => tr.DateTime).Load();
+
+            //TODO: создать класс TransactionView и соответствующий список, и использовать вместо Transactions, который вообще удалить.
+            //В этом классе вместо трех полей будут два, которые StateSupport. нА основании типа транзакции они будут заполняться по-разному
 
             OnPropertyChanged("Transactions");
         }

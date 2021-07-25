@@ -122,6 +122,7 @@
     <Compile Include="HelpClasses\Enums\TransactionTypeEnum.cs" />
     <Compile Include="HelpClasses\GridViewSort.cs" />
     <Compile Include="HelpClasses\NotifyPropertyChanged.cs" />
+    <Compile Include="HelpClasses\TextBoxInputBehavior.cs" />
     <Compile Include="Models\StateSupport.cs" />
     <Compile Include="ThemeModifier.cs" />
     <Compile Include="ViewModels\InvestmentsViewModel.cs" />

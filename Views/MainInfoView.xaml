@@ -178,15 +178,13 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel  HorizontalAlignment="Center" Orientation="Horizontal" Grid.Column="1">
-                    <TextBlock Text="Доходы и расходы за "
+                    <TextBlock Text="Операции за "
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
-                               FontSize="16"
                                        />
 
                     <ComboBox ItemsSource="{Binding TimePeriods}"
-                              SelectedItem="{Binding SetCurTimePeriod, Delay=10}"
-                              FontSize="16">
+                              SelectedItem="{Binding SetCurTimePeriod, Delay=10}">
                         
                         <ComboBox.Resources>
                             <Style TargetType="{x:Type ComboBoxItem}">

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -6,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using VOlkin.Dialogs.Service;
 using VOlkin.HelpClasses.Enums;
@@ -14,10 +17,13 @@ namespace VOlkin.Dialogs.AddCategory
 {
     public class AddCategoryDialogVM : DialogViewModelBase<Category>
     {
-        public string _categoryNameInput;
+        private string _categoryNameInput;
+        private readonly HashSet<(string, CategoryTypeEnum)> _existingCategoriesNameAndType;
 
-        public AddCategoryDialogVM(string title) : base(title)
+        public AddCategoryDialogVM(string title, HashSet<(string, CategoryTypeEnum)> existingCategoriesNameAndType) : base(title)
         {
+            _existingCategoriesNameAndType = existingCategoriesNameAndType;
+
             OKCommand = new RelayCommand<DialogWindow>(OK);
             CancelCommand = new RelayCommand<DialogWindow>(Cancel);
         }
@@ -39,7 +45,18 @@ namespace VOlkin.Dialogs.AddCategory
 
         private void Cancel(IDialogWindow window) => CloseDialogWithResult(window, null, false);
 
-        private void OK(IDialogWindow window) => CloseDialogWithResult(window, new Category(CategoryNameInput, CurrentCategoryType), true);
+        private async void OK(IDialogWindow window)
+        {
+            if (_existingCategoriesNameAndType.Contains((CategoryNameInput, CurrentCategoryType)))
+            {
+                if (Application.Current.Windows.OfType<Window>().SingleOrDefault(window => window.IsActive) is MetroWindow metroWindow)
+                    await metroWindow.ShowMessageAsync("Ошибка", "Категория с таким наименованием уже существует");
+
+                return;
+            }
+
+            CloseDialogWithResult(window, new Category(CategoryNameInput, CurrentCategoryType), true);
+        }
 
         private void UpdateOKbuttonAvailability()
         {

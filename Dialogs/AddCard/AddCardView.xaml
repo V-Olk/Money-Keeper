@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VOlkin.Dialogs.AddCard"
+             xmlns:help="clr-namespace:VOlkin.HelpClasses"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="150"
              d:DesignWidth="580">
@@ -46,12 +48,19 @@
                        Text="Количество средств"
                        HorizontalAlignment="Left"
                        VerticalAlignment="Center"/>
-            
+
             <TextBox Grid.Column="1"
                      Grid.Row="1"
                      Text="{Binding MoneyAmountInput, UpdateSourceTrigger=PropertyChanged}"
-                     Margin="10 10 0 0"/>
-            
+                     Margin="10 10 0 0">
+
+                <i:Interaction.Behaviors>
+                    <help:TextBoxInputBehavior InputMode="DecimalInput"
+                                               JustPositivDecimalInput="True"/>
+                </i:Interaction.Behaviors>
+
+            </TextBox>
+
         </Grid>
         
         <Grid Margin="0 10 0 0">
