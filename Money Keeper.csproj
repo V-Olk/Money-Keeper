@@ -123,7 +123,7 @@
     <Compile Include="HelpClasses\GridViewSort.cs" />
     <Compile Include="HelpClasses\NotifyPropertyChanged.cs" />
     <Compile Include="HelpClasses\TextBoxInputBehavior.cs" />
-    <Compile Include="Models\StateSupport.cs" />
+    <Compile Include="Models\TransactionObject.cs" />
     <Compile Include="ThemeModifier.cs" />
     <Compile Include="ViewModels\InvestmentsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />

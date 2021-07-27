@@ -11,20 +11,16 @@ using VOlkin.Models;
 
 namespace VOlkin
 {
-    public class PaymentType : StateSupport
+    public class PaymentType : TransactionObject
     {
         public PaymentType(string ptn, decimal moneyAmount)
         {
-            PaymentTypeName = ptn;
+            TransactionObjectName = ptn;
             MoneyAmount = moneyAmount;
         }
 
         private PaymentType() { }
 
-        [Key]
-        public int PaymentTypeId { get; private set; }
-        [Required]
-        public string PaymentTypeName { get; private set; }
         [Required]
         public decimal MoneyAmount { get; private set; }
 
@@ -54,7 +50,5 @@ namespace VOlkin
             MoneyAmount -= moneyAmount;
             OnPropertyChanged("MoneyAmount");
         }
-
-        public override string ToString() => PaymentTypeName;
     }
 }

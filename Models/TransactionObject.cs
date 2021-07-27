@@ -9,8 +9,14 @@ using VOlkin.HelpClasses.Enums;
 
 namespace VOlkin.Models
 {
-    public abstract class StateSupport : NotifyPropertyChanged
+    public abstract class TransactionObject : NotifyPropertyChanged
     {
+        [Key]
+        public int TransactionObjectId { get; private set; }
+
+        [Required]
+        public string TransactionObjectName { get; protected set; }
+
         [Required]
         public StatesEnum State { get; protected set; }
 
@@ -18,5 +24,6 @@ namespace VOlkin.Models
         public void Delete() => State = StatesEnum.Removed;
         public void MakeActive() => State = StatesEnum.Active;
 
+        public override string ToString() => TransactionObjectName;
     }
 }

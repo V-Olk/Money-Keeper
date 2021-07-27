@@ -9,22 +9,18 @@ using VOlkin.Models;
 
 namespace VOlkin
 {
-    public class Category : StateSupport
+    public class Category : TransactionObject
     {
         public Category(string categoryName, CategoryTypeEnum categoryTypeEnum)
         {
-            CategoryName = categoryName;
+            TransactionObjectName = categoryName;
             CategoryType = categoryTypeEnum;
         }
 
         private Category() { }
 
-        [Key]
-        public int CategoryId { get; private set; }
-        [Required]
-        public string CategoryName { get; private set; }
         [Required]
         public CategoryTypeEnum CategoryType { get; private set; }
-        public override string ToString() => CategoryName;
+        
     }
 }

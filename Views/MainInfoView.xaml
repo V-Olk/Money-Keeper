@@ -24,7 +24,7 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="{Binding PaymentTypeName}" Grid.Column="0"/>
+                <TextBlock Text="{Binding TransactionObjectName}" Grid.Column="0"/>
 
                 <TextBlock Text="{Binding MoneyAmount}" Grid.Column="1"/>
             </Grid>
@@ -39,7 +39,7 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="{Binding CategoryName}" Grid.Column="0"/>
+                <TextBlock Text="{Binding TransactionObjectName}" Grid.Column="0"/>
             </Grid>
         </DataTemplate>
 
@@ -227,14 +227,18 @@
                                         help:GridViewSort.PropertyName="TransactionType"
                                         />
 
-                        <GridViewColumn DisplayMemberBinding="{Binding CategoryFk}"
-                                        Header="Категория"
-                                        help:GridViewSort.PropertyName="CategoryFk"
+                        <GridViewColumn DisplayMemberBinding="{Binding SourceFk}"
+                                        Header="Откуда"
+                                        help:GridViewSort.PropertyName="SourceFk"
                                         />
 
+                        <GridViewColumn DisplayMemberBinding="{Binding DestinationFk}"
+                                        Header="Куда"
+                                        help:GridViewSort.PropertyName="DestinationFk"/>
+
                         <GridViewColumn DisplayMemberBinding="{Binding Price}"
-                                        Header="Цена"
-                                        help:GridViewSort.PropertyName="CategoryFk"/>
+                                        Header="Средств"
+                                        help:GridViewSort.PropertyName="Price"/>
 
                         <GridViewColumn DisplayMemberBinding="{Binding Comment}"
                                         Header="Комментарий"

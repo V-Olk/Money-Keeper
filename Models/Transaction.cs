@@ -14,33 +14,13 @@ namespace VOlkin
     {
 
         public Transaction(TransactionTypeEnum transactionTypeEnum, decimal price, DateTime dateTime,
-                            StateSupport ptOrCatSource, StateSupport ptOrCatDestination, string comment = null)
+                            TransactionObject ptOrCatSource, TransactionObject ptOrCatDestination, string comment = null)
         {
             TransactionType = transactionTypeEnum;
             Price = price;
             DateTime = dateTime;
-
-            switch (transactionTypeEnum)
-            {
-                case TransactionTypeEnum.Expense:
-                    PaymentTypeSourceFk = ptOrCatSource as PaymentType;
-                    CategoryFk = ptOrCatDestination as Category;
-                    break;
-
-                case TransactionTypeEnum.Income:
-                    CategoryFk = ptOrCatSource as Category;
-                    PaymentTypeDestFk = ptOrCatDestination as PaymentType;
-                    break;
-
-                case TransactionTypeEnum.Transfer:
-                    PaymentTypeSourceFk = ptOrCatSource as PaymentType;
-                    PaymentTypeDestFk = ptOrCatDestination as PaymentType;
-                    break;
-
-                default:
-                    break;
-            }
-
+            SourceFk = ptOrCatSource;
+            DestinationFk = ptOrCatDestination;
             Comment = comment;
         }
 
@@ -48,16 +28,23 @@ namespace VOlkin
 
         [Key]
         public int TransactionId { get; private set; }
+
         [Timestamp]
         [Required]
         public DateTime DateTime { get; private set; }
+
         [Required]
         public decimal Price { get; private set; }
+
         [Required]
         public TransactionTypeEnum TransactionType { get; private set; }
-        public Category CategoryFk { get; private set; }
-        public PaymentType PaymentTypeSourceFk { get; private set; }
-        public PaymentType PaymentTypeDestFk { get; private set; }
+
+        [Required]
+        public TransactionObject SourceFk { get; private set; }
+
+        [Required]
+        public TransactionObject DestinationFk { get; private set; }
+
         public string Comment { get; private set; }
 
     }

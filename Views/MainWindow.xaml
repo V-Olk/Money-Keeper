@@ -14,7 +14,7 @@
         Height="600"
         Width="700"
         MinHeight="600"  
-        MinWidth="700"
+        MinWidth="750"
         FontSize="16">
 
     <materialDesign:DialogHost Identifier="RootDialog">

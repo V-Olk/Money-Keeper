@@ -34,9 +34,9 @@ namespace VOlkin.ViewModels
         private RelayCommand _addCategoryCommand;
         private RelayCommand _addTransactionCommand;
 
-        private RelayCommand<StateSupport> _closeStateSupportObjCommand;
+        private RelayCommand<TransactionObject> _closeStateSupportObjCommand;
 
-        private RelayCommand<StateSupport> _removeStateSupportObjCommand;
+        private RelayCommand<TransactionObject> _removeStateSupportObjCommand;
         private RelayCommand<Transaction> _removeTransactionCommand;
 
         public MainInfoViewModel()
@@ -96,8 +96,8 @@ namespace VOlkin.ViewModels
         public RelayCommand AddCategoryCommand => _addCategoryCommand ??= new(AddCategory);
         public RelayCommand AddTransactionCommand => _addTransactionCommand ??= new(AddTransaction);
 
-        public RelayCommand<StateSupport> CloseStateSupportObjCommand => _closeStateSupportObjCommand ??= new(CloseStateSupportObj);
-        public RelayCommand<StateSupport> RemoveStateSupportObjCommand => _removeStateSupportObjCommand ??= new(RemoveStateSupportObj);
+        public RelayCommand<TransactionObject> CloseStateSupportObjCommand => _closeStateSupportObjCommand ??= new(CloseStateSupportObj);
+        public RelayCommand<TransactionObject> RemoveStateSupportObjCommand => _removeStateSupportObjCommand ??= new(RemoveStateSupportObj);
         public RelayCommand<Transaction> RemoveTransactionCommand => _removeTransactionCommand ??= new(RemoveTransaction);
 
         #region ChangeTimePeriodMethods
@@ -122,9 +122,9 @@ namespace VOlkin.ViewModels
         {
             if (!DialogService.OpenDialog(new AddCardDialogViewModel("Добавление нового счета",
                                                                      DbContext.PaymentTypes
-                                                                     .Where(pt => pt.State == StatesEnum.Active || pt.State ==  StatesEnum.Closed)
-                                                                     .Select(pt => pt.PaymentTypeName)
-                                                                     .ToHashSet()),                                                                     
+                                                                     .Where(pt => pt.State == StatesEnum.Active || pt.State == StatesEnum.Closed)
+                                                                     .Select(pt => pt.TransactionObjectName)
+                                                                     .ToHashSet()),
                                                                      out PaymentType newPaymentType))
                 return;
 
@@ -138,7 +138,7 @@ namespace VOlkin.ViewModels
                                                                    DbContext.Categories
                                                                      .Where(ct => ct.State == StatesEnum.Active || ct.State == StatesEnum.Closed)
                                                                      .AsEnumerable()
-                                                                     .Select(ct => (ct.CategoryName, ct.CategoryType))
+                                                                     .Select(ct => (ct.TransactionObjectName, ct.CategoryType))
                                                                      .ToHashSet()),
                                                                    out Category addCategoryDialogRes))
                 return;
@@ -149,18 +149,38 @@ namespace VOlkin.ViewModels
 
         private void AddTransaction()
         {
-            if (!DialogService.OpenDialog(new AddTransactionViewModel("Добавление новой транзакции", PaymentTypes, Categories), out var dialogRes))
+            if (!DialogService.OpenDialog(new AddTransactionViewModel("Добавление новой транзакции", PaymentTypes, Categories), out Transaction dialogRes))
                 return;
 
             DbContext.Transactions.Add(dialogRes);
 
-            dialogRes.PaymentTypeSourceFk.Decrease(dialogRes.Price);
+            switch (dialogRes.TransactionType)
+            {
+                case TransactionTypeEnum.Expense:
+                    (dialogRes.SourceFk as PaymentType)?.Decrease(dialogRes.Price);
+                    break;
+
+                case TransactionTypeEnum.Income:
+                    (dialogRes.DestinationFk as PaymentType)?.Increase(dialogRes.Price);
+                    break;
+
+                case TransactionTypeEnum.Transfer:
+                    (dialogRes.SourceFk as PaymentType)?.Decrease(dialogRes.Price);
+                    (dialogRes.DestinationFk as PaymentType)?.Increase(dialogRes.Price);
+                    break;
+
+                default:
+                    break;
+            }
 
             DbContext.SaveChanges();
+
+            LoadTransactions();
+
             OnPropertyChanged("TotalMoney");
         }
 
-        private async void CloseStateSupportObj(StateSupport stateSupportobj)
+        private async void CloseStateSupportObj(TransactionObject stateSupportobj)
         {
             QuestionDialogView view = new()
             {
@@ -178,7 +198,7 @@ namespace VOlkin.ViewModels
             DbContext.Entry(stateSupportobj).State = EntityState.Detached;
         }
 
-        private async void RemoveStateSupportObj(StateSupport stateSupportobj)
+        private async void RemoveStateSupportObj(TransactionObject stateSupportobj)
         {
             QuestionDialogView view = new()
             {
@@ -221,11 +241,9 @@ namespace VOlkin.ViewModels
 
             DbContext.Transactions
                         .Where(tr => tr.DateTime > StartDate && tr.DateTime <= EndDate)
-                        .Include(tr => tr.CategoryFk)
+                        .Include(tr => tr.SourceFk)
+                        .Include(tr => tr.DestinationFk)
                         .OrderByDescending(tr => tr.DateTime).Load();
-
-            //TODO: создать класс TransactionView и соответствующий список, и использовать вместо Transactions, который вообще удалить.
-            //В этом классе вместо трех полей будут два, которые StateSupport. нА основании типа транзакции они будут заполняться по-разному
 
             OnPropertyChanged("Transactions");
         }

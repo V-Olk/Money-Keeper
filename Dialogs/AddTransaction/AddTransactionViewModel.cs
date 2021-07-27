@@ -29,7 +29,7 @@ namespace VOlkin.Dialogs.AddTransaction
         private readonly ObservableCollection<PaymentType> _paymentTypes;
         private readonly ObservableCollection<Category> _categories;
 
-        private StateSupport _currentPTorCatFrom;
+        private TransactionObject _currentPTorCatFrom;
         private string _price;
 
         public AddTransactionViewModel(string title, ObservableCollection<PaymentType> paymentTypes, ObservableCollection<Category> categories) : base(title)
@@ -55,14 +55,16 @@ namespace VOlkin.Dialogs.AddTransaction
             get => _currentTransactionType;
             set
             {
+                SetProperty(ref _currentTransactionType, value);
+
                 switch (value)
                 {
                     case TransactionTypeEnum.Expense:
                         TextFrom = _textFromPaymentLocalized;
                         TextTo = _textToCategoryLocalized;
 
-                        PTorCatFrom = new ObservableCollection<StateSupport>(_paymentTypes);
-                        PTorCatTo = new ObservableCollection<StateSupport>(_categories.Where(ct => ct.CategoryType == CategoryTypeEnum.Expense));
+                        PTorCatFrom = new ObservableCollection<TransactionObject>(_paymentTypes);
+                        PTorCatTo = new ObservableCollection<TransactionObject>(_categories.Where(ct => ct.CategoryType == CategoryTypeEnum.Expense));
 
                         break;
 
@@ -70,8 +72,8 @@ namespace VOlkin.Dialogs.AddTransaction
                         TextFrom = _textFromCategoryLocalized;
                         TextTo = _textToPaymentLocalized;
 
-                        PTorCatFrom = new ObservableCollection<StateSupport>(_categories.Where(ct => ct.CategoryType == CategoryTypeEnum.Income));
-                        PTorCatTo = new ObservableCollection<StateSupport>(_paymentTypes);
+                        PTorCatFrom = new ObservableCollection<TransactionObject>(_categories.Where(ct => ct.CategoryType == CategoryTypeEnum.Income));
+                        PTorCatTo = new ObservableCollection<TransactionObject>(_paymentTypes);
 
                         break;
 
@@ -79,8 +81,8 @@ namespace VOlkin.Dialogs.AddTransaction
                         TextFrom = _textFromPaymentLocalized;
                         TextTo = _textToPaymentLocalized;
 
-                        PTorCatFrom = new ObservableCollection<StateSupport>(_paymentTypes);
-                        PTorCatTo = new ObservableCollection<StateSupport>(_paymentTypes.Skip(1));
+                        PTorCatFrom = new ObservableCollection<TransactionObject>(_paymentTypes);
+                        PTorCatTo = new ObservableCollection<TransactionObject>(_paymentTypes.Skip(1));
 
                         break;
 
@@ -100,13 +102,13 @@ namespace VOlkin.Dialogs.AddTransaction
                 OnPropertyChanged("TextFrom");
                 OnPropertyChanged("TextTo");
 
-                SetProperty(ref _currentTransactionType, value);
             }
         
         }
         
         public string Comment { get; set; }
         public DateTime DatTime { get; set; } = DateTime.Now;
+
         public string Price
         {
             get => _price;
@@ -116,11 +118,14 @@ namespace VOlkin.Dialogs.AddTransaction
                 UpdateOKbuttonAvailability();
             }
         }
+
         public string TextFrom { get; set; }
         public string TextTo { get; set; }
-        public ObservableCollection<StateSupport> PTorCatFrom { get; set; }
-        public ObservableCollection<StateSupport> PTorCatTo { get; set; }
-        public StateSupport CurrentPTorCatFrom
+
+        public ObservableCollection<TransactionObject> PTorCatFrom { get; set; }
+        public ObservableCollection<TransactionObject> PTorCatTo { get; set; }
+
+        public TransactionObject CurrentPTorCatFrom
         {
             get => _currentPTorCatFrom;
             set
@@ -129,7 +134,7 @@ namespace VOlkin.Dialogs.AddTransaction
 
                 if (CurrentTransactionType == TransactionTypeEnum.Transfer)
                 {
-                    PTorCatTo = new ObservableCollection<StateSupport>(_paymentTypes.Where(pt => pt != CurrentPTorCatFrom));
+                    PTorCatTo = new ObservableCollection<TransactionObject>(_paymentTypes.Where(pt => pt != CurrentPTorCatFrom));
 
                     if (CurrentPTorCatTo == CurrentPTorCatFrom)
                     {
@@ -141,7 +146,8 @@ namespace VOlkin.Dialogs.AddTransaction
                 }
             }
         }
-        public StateSupport CurrentPTorCatTo { get; set; }
+
+        public TransactionObject CurrentPTorCatTo { get; set; }
         public bool OkButtonAvailable { get; private set; } = false;
 
         public ICommand OKCommand { get; private set; }
