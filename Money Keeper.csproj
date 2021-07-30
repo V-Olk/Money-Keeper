@@ -133,7 +133,7 @@
     <Compile Include="Views\OptionsView.xaml.cs">
       <DependentUpon>OptionsView.xaml</DependentUpon>
     </Compile>
-    <Page Include="Dialogs\AddCard\AddCardView.xaml">
+    <Page Include="Dialogs\Card\CardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -178,9 +178,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DatabaseContext.cs" />
-    <Compile Include="Dialogs\AddCard\AddCardDialogViewModel.cs" />
-    <Compile Include="Dialogs\AddCard\AddCardView.xaml.cs">
-      <DependentUpon>AddCardView.xaml</DependentUpon>
+    <Compile Include="Dialogs\Card\CardDialogViewModel.cs" />
+    <Compile Include="Dialogs\Card\CardView.xaml.cs">
+      <DependentUpon>CardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\Service\DialogViewModelBase.cs" />
     <Compile Include="Dialogs\Service\DialogService.cs" />

@@ -27,10 +27,12 @@
                 <TextBlock Text="{Binding TransactionObjectName}" Grid.Column="0"/>
 
                 <TextBlock Text="{Binding MoneyAmount}" Grid.Column="1"/>
+                
             </Grid>
         </DataTemplate>
 
         <DataTemplate x:Key="CategoriesTemplate">
+            
             <Grid HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
 
                 <Grid.ColumnDefinitions>
@@ -40,22 +42,26 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="{Binding TransactionObjectName}" Grid.Column="0"/>
+                
             </Grid>
+            
         </DataTemplate>
 
         <ControlTemplate x:Key="NoScroll">
-            <ItemsPresenter></ItemsPresenter>
+            <ItemsPresenter/>
         </ControlTemplate>
 
     </UserControl.Resources>
 
     <ScrollViewer>
+        
         <StackPanel Margin="10">
 
             <!--Region PaymentTypes-->
             <Expander>
 
                 <Expander.Header>
+                    
                     <Grid  HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
                         
                         <Grid.ColumnDefinitions>
@@ -73,6 +79,7 @@
                         </Button>
 
                     </Grid>
+                    
                 </Expander.Header>
 
                 <ListBox x:Name="PaymenTypesListBox"
@@ -80,10 +87,30 @@
                          ItemTemplate="{StaticResource PaymentTypesTemplate}"
                          Template="{StaticResource NoScroll}">
 
+                    <i:Interaction.Triggers>
+                        
+                        <i:EventTrigger EventName="MouseDoubleClick">
+                            
+                            <i:InvokeCommandAction Command="{Binding UpdateCardCommand}"
+                                                   CommandParameter="{Binding ElementName=PaymenTypesListBox, Path=SelectedItem}" />
+                        </i:EventTrigger>
+                        
+                    </i:Interaction.Triggers>
+
                     <ListBox.ContextMenu>
                         
                         <ContextMenu>
-                            
+
+                            <MenuItem Header="Редактировать счет"
+                                      Command="{Binding UpdateCardCommand}"
+                                      CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}},
+                                                                  Path=PlacementTarget.SelectedItem}">
+
+                                <MenuItem.Icon>
+                                    <materialDesign:PackIcon Kind="Edit" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+
                             <MenuItem Header="Закрыть счет"
                                       Command="{Binding CloseStateSupportObjCommand}"
                                       CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}},
@@ -149,6 +176,7 @@
                                 <MenuItem.Icon>
                                     <materialDesign:PackIcon Kind="Close" />
                                 </MenuItem.Icon>
+                                
                             </MenuItem>
                             
                             <MenuItem Header="Удалить категорию"
@@ -159,6 +187,7 @@
                                 <MenuItem.Icon>
                                     <materialDesign:PackIcon Kind="Delete" />
                                 </MenuItem.Icon>
+                                
                             </MenuItem>
                             
                         </ContextMenu>
@@ -195,9 +224,16 @@
                     </ComboBox>
                 </StackPanel>
 
-                <Button Grid.Column="2" HorizontalAlignment="Right" Command="{Binding AddTransactionCommand}" Width="50" Margin="0 0 64 0">
+                <Button Grid.Column="2"
+                        HorizontalAlignment="Right"
+                        Command="{Binding AddTransactionCommand}"
+                        Width="50"
+                        Margin="0 0 64 0">
+                    
                     <materialDesign:PackIcon Kind="Plus"/>
+                    
                 </Button>
+                
             </Grid>
 
             <ListView ItemsSource="{Binding Transactions}"
@@ -205,6 +241,7 @@
                       help:GridViewSort.AutoSort="True">
 
                 <ListView.ItemContainerStyle>
+                    
                     <Style TargetType="ListViewItem" BasedOn="{StaticResource MaterialDesignGridViewItem}">
 
                         <!--Selected item is not visible-->
@@ -216,6 +253,7 @@
                         </Style.Triggers>
 
                     </Style>
+                    
                 </ListView.ItemContainerStyle>
 
                 <ListView.View>
@@ -253,6 +291,7 @@
                 </ListView.View>
 
                 <ListView.ContextMenu>
+                    
                     <ContextMenu>
                         <MenuItem Header="Удалить транзакцию"
                                   Command="{Binding RemoveTransactionCommand}"
@@ -262,8 +301,10 @@
                             <MenuItem.Icon>
                                 <materialDesign:PackIcon Kind="Delete" />
                             </MenuItem.Icon>
+                            
                         </MenuItem>
                     </ContextMenu>
+                    
                 </ListView.ContextMenu>
 
             </ListView>

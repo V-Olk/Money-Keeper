@@ -2,7 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Money_Keeper"
-             xmlns:addCard="clr-namespace:VOlkin.Dialogs.AddCard"
+             xmlns:card="clr-namespace:VOlkin.Dialogs.Card"
              xmlns:readTwoDates="clr-namespace:VOlkin.Dialogs.ReadTwoDates"
              xmlns:addTransaction="clr-namespace:VOlkin.Dialogs.AddTransaction"
              xmlns:addCategory="clr-namespace:VOlkin.Dialogs.AddCategory"
@@ -28,8 +28,8 @@
 
             </ResourceDictionary.MergedDictionaries>
 
-            <DataTemplate DataType="{x:Type addCard:AddCardDialogViewModel}">
-                <addCard:AddCardView/>
+            <DataTemplate DataType="{x:Type card:CardDialogViewModel}">
+                <card:CardView/>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type readTwoDates:ReadTwoDatesViewModel}">

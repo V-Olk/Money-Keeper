@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using VOlkin.Dialogs.AddCard;
+using VOlkin.Dialogs.Card;
 using VOlkin.Dialogs.Service;
 using ExtensionMethods;
 using VOlkin.HelpClasses;
@@ -33,6 +33,8 @@ namespace VOlkin.ViewModels
         private RelayCommand _addCardCommand;
         private RelayCommand _addCategoryCommand;
         private RelayCommand _addTransactionCommand;
+
+        private RelayCommand<PaymentType> _updateCardCommand;
 
         private RelayCommand<TransactionObject> _closeStateSupportObjCommand;
 
@@ -100,6 +102,8 @@ namespace VOlkin.ViewModels
         public RelayCommand<TransactionObject> RemoveStateSupportObjCommand => _removeStateSupportObjCommand ??= new(RemoveStateSupportObj);
         public RelayCommand<Transaction> RemoveTransactionCommand => _removeTransactionCommand ??= new(RemoveTransaction);
 
+        public RelayCommand<PaymentType> UpdateCardCommand => _updateCardCommand ??= new(UpdateCard);
+
         #region ChangeTimePeriodMethods
         private static bool ChangeTimePeriodToDay() { StartDate = DateTime.Today; EndDate = DateTime.MaxValue; return true; }
         private static bool ChangeTimePeriodToWeek() { StartDate = DateTime.Today.FirstDayOfWeek(DayOfWeek.Monday); EndDate = DateTime.MaxValue; return true; }
@@ -108,7 +112,7 @@ namespace VOlkin.ViewModels
         private static bool ChangeTimePeriodToAllTime() { StartDate = DateTime.MinValue; EndDate = DateTime.MaxValue; return true; }
         private static bool ChangeTimePeriodToCustom()
         {
-            if (!DialogService.OpenDialog(new ReadTwoDatesViewModel("Выбор периода времени", StartDate, EndDate), out var readTwoDatesRes))
+            if (!DialogService.OpenInputDialog(new ReadTwoDatesViewModel("Выбор периода времени", StartDate, EndDate), out var readTwoDatesRes))
                 return false;
 
             StartDate = readTwoDatesRes.Item1;
@@ -120,7 +124,7 @@ namespace VOlkin.ViewModels
 
         private void AddCard()
         {
-            if (!DialogService.OpenDialog(new AddCardDialogViewModel("Добавление нового счета",
+            if (!DialogService.OpenInputDialog(new CardDialogViewModel("Добавление нового счета",
                                                                      DbContext.PaymentTypes
                                                                      .Where(pt => pt.State == StatesEnum.Active || pt.State == StatesEnum.Closed)
                                                                      .Select(pt => pt.TransactionObjectName)
@@ -132,9 +136,27 @@ namespace VOlkin.ViewModels
             DbContext.SaveChanges();
         }
 
+        private void UpdateCard(PaymentType existingPaymentType)
+        {
+            if (!DialogService.OpenDialog(new CardDialogViewModel("Редактирование счета",
+                                                                     DbContext.PaymentTypes
+                                                                     .Where(pt => pt.TransactionObjectId != existingPaymentType.TransactionObjectId
+                                                                               && (pt.State == StatesEnum.Active || pt.State == StatesEnum.Closed))
+                                                                     .Select(pt => pt.TransactionObjectName)
+                                                                     .ToHashSet(),
+                                                                     existingPaymentType
+                                                                     )))
+
+                return;
+
+            DbContext.SaveChanges();
+
+            OnPropertyChanged("TotalMoney");
+        }
+
         private void AddCategory()
         {
-            if (!DialogService.OpenDialog(new AddCategoryDialogVM("Добавление новой категории",
+            if (!DialogService.OpenInputDialog(new AddCategoryDialogVM("Добавление новой категории",
                                                                    DbContext.Categories
                                                                      .Where(ct => ct.State == StatesEnum.Active || ct.State == StatesEnum.Closed)
                                                                      .AsEnumerable()
@@ -149,7 +171,7 @@ namespace VOlkin.ViewModels
 
         private void AddTransaction()
         {
-            if (!DialogService.OpenDialog(new AddTransactionViewModel("Добавление новой транзакции", PaymentTypes, Categories), out Transaction dialogRes))
+            if (!DialogService.OpenInputDialog(new AddTransactionViewModel("Добавление новой транзакции", PaymentTypes, Categories), out Transaction dialogRes))
                 return;
 
             DbContext.Transactions.Add(dialogRes);

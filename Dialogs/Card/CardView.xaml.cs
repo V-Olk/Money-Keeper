@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace VOlkin.Dialogs.AddCard
+namespace VOlkin.Dialogs.Card
 {
     /// <summary>
-    /// Логика взаимодействия для AddCardView.xaml
+    /// Логика взаимодействия для CardView.xaml
     /// </summary>
-    public partial class AddCardView : UserControl
+    public partial class CardView : UserControl
     {
-        public AddCardView()
+        public CardView()
         {
             InitializeComponent();
         }

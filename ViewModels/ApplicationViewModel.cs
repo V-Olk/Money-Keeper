@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using VOlkin.Dialogs.AddCard;
+using VOlkin.Dialogs.Card;
 using VOlkin.Dialogs.Service;
 using VOlkin.ViewModels;
 

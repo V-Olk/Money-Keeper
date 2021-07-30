@@ -30,5 +30,13 @@ namespace VOlkin.Dialogs.Service
             else
                 dialog.DialogResult = false;
         }
+
+        public void CloseDialog(IDialogWindow dialog, bool userPressOKandCorrectInput)
+        {
+            if (dialog != null && userPressOKandCorrectInput)
+                dialog.DialogResult = true;
+            else
+                dialog.DialogResult = false;
+        }
     }
 }

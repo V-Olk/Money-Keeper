@@ -8,6 +8,8 @@ namespace VOlkin.Dialogs.Service
 {
     public interface IDialogService
     {
-        bool OpenDialog<T>(DialogViewModelBase<T> viewModel, out T result);
+        bool OpenInputDialog<T>(DialogViewModelBase<T> viewModel, out T result);
+
+        bool OpenDialog<T>(DialogViewModelBase<T> viewModel);
     }
 }

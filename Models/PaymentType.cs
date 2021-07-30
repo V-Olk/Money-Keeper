@@ -50,5 +50,14 @@ namespace VOlkin
             MoneyAmount -= moneyAmount;
             OnPropertyChanged("MoneyAmount");
         }
+
+        public void Update(string newName, decimal newMoneyAmount)
+        {
+            TransactionObjectName = newName;
+            MoneyAmount = newMoneyAmount;
+
+            OnPropertyChanged("TransactionObjectName");
+            OnPropertyChanged("MoneyAmount");
+        }
     }
 }
