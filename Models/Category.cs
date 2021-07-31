@@ -21,6 +21,15 @@ namespace VOlkin
 
         [Required]
         public CategoryTypeEnum CategoryType { get; private set; }
-        
+
+        public void Update(string newName, CategoryTypeEnum newCategoryType)
+        {
+            TransactionObjectName = newName;
+            CategoryType = newCategoryType;
+
+            OnPropertyChanged("TransactionObjectName");
+            OnPropertyChanged("CategoryType");
+        }
+
     }
 }

@@ -99,10 +99,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Dialogs\AddCategory\AddCategoryDialogView.xaml.cs">
-      <DependentUpon>AddCategoryDialogView.xaml</DependentUpon>
+    <Compile Include="Dialogs\CategoryDialog\CategoryDialogView.xaml.cs">
+      <DependentUpon>CategoryDialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\AddCategory\AddCategoryDialogVM.cs" />
+    <Compile Include="Dialogs\CategoryDialog\CategoryDialogVM.cs" />
     <Compile Include="Dialogs\AddTransaction\AddTransactionView.xaml.cs">
       <DependentUpon>AddTransactionView.xaml</DependentUpon>
     </Compile>
@@ -133,11 +133,11 @@
     <Compile Include="Views\OptionsView.xaml.cs">
       <DependentUpon>OptionsView.xaml</DependentUpon>
     </Compile>
-    <Page Include="Dialogs\Card\CardView.xaml">
+    <Page Include="Dialogs\CardDialog\CardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialogs\AddCategory\AddCategoryDialogView.xaml">
+    <Page Include="Dialogs\CategoryDialog\CategoryDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -178,8 +178,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DatabaseContext.cs" />
-    <Compile Include="Dialogs\Card\CardDialogViewModel.cs" />
-    <Compile Include="Dialogs\Card\CardView.xaml.cs">
+    <Compile Include="Dialogs\CardDialog\CardDialogViewModel.cs" />
+    <Compile Include="Dialogs\CardDialog\CardView.xaml.cs">
       <DependentUpon>CardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\Service\DialogViewModelBase.cs" />

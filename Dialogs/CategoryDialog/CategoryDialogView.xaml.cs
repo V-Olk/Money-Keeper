@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace VOlkin.Dialogs.AddCategory
+namespace VOlkin.Dialogs.CategoryDialog
 {
     /// <summary>
-    /// Interaction logic for AddCategoryView.xaml
+    /// Interaction logic for CategoryDialogView.xaml
     /// </summary>
-    public partial class AddCategoryView : UserControl
+    public partial class CategoryDialogView : UserControl
     {
-        public AddCategoryView()
+        public CategoryDialogView()
         {
             InitializeComponent();
         }

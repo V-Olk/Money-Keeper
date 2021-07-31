@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using VOlkin.Dialogs.Card;
+using VOlkin.Dialogs.CardDialog;
 using VOlkin.Dialogs.Service;
 using ExtensionMethods;
 using VOlkin.HelpClasses;
@@ -20,7 +20,7 @@ using MaterialDesignThemes.Wpf;
 using VOlkin.Dialogs.QuestionDialog;
 using VOlkin.Dialogs.AddTransaction;
 using System.Collections.Specialized;
-using VOlkin.Dialogs.AddCategory;
+using VOlkin.Dialogs.CategoryDialog;
 using VOlkin.HelpClasses.Enums;
 using VOlkin.Models;
 
@@ -35,6 +35,8 @@ namespace VOlkin.ViewModels
         private RelayCommand _addTransactionCommand;
 
         private RelayCommand<PaymentType> _updateCardCommand;
+        private RelayCommand<Category> _updateCategoryCommand;
+        private RelayCommand<Transaction> _updateTransactionCommand;
 
         private RelayCommand<TransactionObject> _closeStateSupportObjCommand;
 
@@ -103,6 +105,9 @@ namespace VOlkin.ViewModels
         public RelayCommand<Transaction> RemoveTransactionCommand => _removeTransactionCommand ??= new(RemoveTransaction);
 
         public RelayCommand<PaymentType> UpdateCardCommand => _updateCardCommand ??= new(UpdateCard);
+        public RelayCommand<Category> UpdateCategoryCommand => _updateCategoryCommand ??= new(UpdateCategory);
+        public RelayCommand<Transaction> UpdateTransactionCommand => _updateTransactionCommand ??= new(null);
+
 
         #region ChangeTimePeriodMethods
         private static bool ChangeTimePeriodToDay() { StartDate = DateTime.Today; EndDate = DateTime.MaxValue; return true; }
@@ -136,27 +141,9 @@ namespace VOlkin.ViewModels
             DbContext.SaveChanges();
         }
 
-        private void UpdateCard(PaymentType existingPaymentType)
-        {
-            if (!DialogService.OpenDialog(new CardDialogViewModel("Редактирование счета",
-                                                                     DbContext.PaymentTypes
-                                                                     .Where(pt => pt.TransactionObjectId != existingPaymentType.TransactionObjectId
-                                                                               && (pt.State == StatesEnum.Active || pt.State == StatesEnum.Closed))
-                                                                     .Select(pt => pt.TransactionObjectName)
-                                                                     .ToHashSet(),
-                                                                     existingPaymentType
-                                                                     )))
-
-                return;
-
-            DbContext.SaveChanges();
-
-            OnPropertyChanged("TotalMoney");
-        }
-
         private void AddCategory()
         {
-            if (!DialogService.OpenInputDialog(new AddCategoryDialogVM("Добавление новой категории",
+            if (!DialogService.OpenInputDialog(new CategoryDialogVM("Добавление новой категории",
                                                                    DbContext.Categories
                                                                      .Where(ct => ct.State == StatesEnum.Active || ct.State == StatesEnum.Closed)
                                                                      .AsEnumerable()
@@ -200,6 +187,23 @@ namespace VOlkin.ViewModels
             LoadTransactions();
 
             OnPropertyChanged("TotalMoney");
+        }
+
+        private void LoadTransactions()
+        {
+            DbContext.Transactions.Local.ToList().ForEach(x =>
+            {
+                DbContext.Entry(x).State = EntityState.Detached;
+                x = null;
+            });
+
+            DbContext.Transactions
+                        .Where(tr => tr.DateTime > StartDate && tr.DateTime <= EndDate)
+                        .Include(tr => tr.SourceFk)
+                        .Include(tr => tr.DestinationFk)
+                        .OrderByDescending(tr => tr.DateTime).Load();
+
+            OnPropertyChanged("Transactions");
         }
 
         private async void CloseStateSupportObj(TransactionObject stateSupportobj)
@@ -253,21 +257,41 @@ namespace VOlkin.ViewModels
             DbContext.SaveChanges();
         }
 
-        private void LoadTransactions()
+
+
+        private void UpdateCard(PaymentType existingPaymentType)
         {
-            DbContext.Transactions.Local.ToList().ForEach(x =>
-            {
-                DbContext.Entry(x).State = EntityState.Detached;
-                x = null;
-            });
+            if (!DialogService.OpenDialog(new CardDialogViewModel("Редактирование счета",
+                                                                     DbContext.PaymentTypes
+                                                                     .Where(pt => pt.TransactionObjectId != existingPaymentType.TransactionObjectId
+                                                                               && (pt.State == StatesEnum.Active || pt.State == StatesEnum.Closed))
+                                                                     .Select(pt => pt.TransactionObjectName)
+                                                                     .ToHashSet(),
+                                                                     existingPaymentType
+                                                                     )))
 
-            DbContext.Transactions
-                        .Where(tr => tr.DateTime > StartDate && tr.DateTime <= EndDate)
-                        .Include(tr => tr.SourceFk)
-                        .Include(tr => tr.DestinationFk)
-                        .OrderByDescending(tr => tr.DateTime).Load();
+                return;
 
-            OnPropertyChanged("Transactions");
+            DbContext.SaveChanges();
+
+            OnPropertyChanged("TotalMoney");
+        }
+
+        private void UpdateCategory(Category existingCategory)
+        {
+            if (!DialogService.OpenDialog(new CategoryDialogVM("Редактирование категории",
+                                                       DbContext.Categories
+                                                         .Where(ct => ct.TransactionObjectId != existingCategory.TransactionObjectId
+                                                                   && (ct.State == StatesEnum.Active || ct.State == StatesEnum.Closed))
+                                                         .AsEnumerable()
+                                                         .Select(ct => (ct.TransactionObjectName, ct.CategoryType))
+                                                         .ToHashSet(),
+                                                         existingCategory)))
+                return;
+
+            DbContext.SaveChanges();
+
+            OnPropertyChanged("TotalMoney");
         }
     }
 }

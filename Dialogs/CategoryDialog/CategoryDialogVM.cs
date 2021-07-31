@@ -12,20 +12,31 @@ using System.Windows;
 using System.Windows.Input;
 using VOlkin.Dialogs.Service;
 using VOlkin.HelpClasses.Enums;
+using VOlkin.Models;
 
-namespace VOlkin.Dialogs.AddCategory
+namespace VOlkin.Dialogs.CategoryDialog
 {
-    public class AddCategoryDialogVM : DialogViewModelBase<Category>
+    public class CategoryDialogVM : DialogViewModelBase<Category>
     {
         private string _categoryNameInput;
         private readonly HashSet<(string, CategoryTypeEnum)> _existingCategoriesNameAndType;
+        private readonly Category _existingCategory;
 
-        public AddCategoryDialogVM(string title, HashSet<(string, CategoryTypeEnum)> existingCategoriesNameAndType) : base(title)
+        public CategoryDialogVM(string title, HashSet<(string, CategoryTypeEnum)> existingCategoriesNameAndType, Category existingCategory = null) : base(title)
         {
             _existingCategoriesNameAndType = existingCategoriesNameAndType;
 
             OKCommand = new RelayCommand<DialogWindow>(OK);
             CancelCommand = new RelayCommand<DialogWindow>(Cancel);
+            OkEnterCommand = new RelayCommand<DialogWindow>(OkEnter);
+
+            if (existingCategory != null)
+            {
+                _existingCategory = existingCategory;
+
+                CurrentCategoryType = existingCategory.CategoryType;
+                CategoryNameInput = existingCategory.TransactionObjectName;
+            }
         }
 
         public CategoryTypeEnum CurrentCategoryType { get; set; }
@@ -42,6 +53,8 @@ namespace VOlkin.Dialogs.AddCategory
 
         public ICommand OKCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
+        public ICommand OkEnterCommand { get; private set; }
+
 
         private void Cancel(IDialogWindow window) => CloseDialogWithResult(window, null, false);
 
@@ -55,7 +68,16 @@ namespace VOlkin.Dialogs.AddCategory
                 return;
             }
 
-            CloseDialogWithResult(window, new Category(CategoryNameInput, CurrentCategoryType), true);
+            if (_existingCategory == null)
+            {
+                CloseDialogWithResult(window, new Category(CategoryNameInput, CurrentCategoryType), true);
+            }
+            else
+            {
+                _existingCategory.Update(CategoryNameInput, CurrentCategoryType);
+                CloseDialog(window, true);
+            }
+
         }
 
         private void UpdateOKbuttonAvailability()
@@ -65,6 +87,12 @@ namespace VOlkin.Dialogs.AddCategory
             else
                 OkButtonAvailable = true;
             OnPropertyChanged("OkButtonAvailable");
+        }
+
+        private void OkEnter(IDialogWindow window)
+        {
+            if (OkButtonAvailable)
+                OK(window);
         }
     }
 }

@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace VOlkin.Dialogs.Card
+namespace VOlkin.Dialogs.CardDialog
 {
     /// <summary>
     /// Логика взаимодействия для CardView.xaml

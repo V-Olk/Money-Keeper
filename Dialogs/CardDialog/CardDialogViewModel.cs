@@ -12,7 +12,7 @@ using System.Windows;
 using System.Windows.Input;
 using VOlkin.Dialogs.Service;
 
-namespace VOlkin.Dialogs.Card
+namespace VOlkin.Dialogs.CardDialog
 {
     public class CardDialogViewModel : DialogViewModelBase<PaymentType>
     {

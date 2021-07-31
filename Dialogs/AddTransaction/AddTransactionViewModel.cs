@@ -27,12 +27,12 @@ namespace VOlkin.Dialogs.AddTransaction
         private readonly string _textToCategoryLocalized;
 
         private readonly ObservableCollection<PaymentType> _paymentTypes;
-        private readonly ObservableCollection<Category> _categories;
+        private readonly ObservableCollection<VOlkin.Category> _categories;
 
         private TransactionObject _currentPTorCatFrom;
         private string _price;
 
-        public AddTransactionViewModel(string title, ObservableCollection<PaymentType> paymentTypes, ObservableCollection<Category> categories) : base(title)
+        public AddTransactionViewModel(string title, ObservableCollection<PaymentType> paymentTypes, ObservableCollection<VOlkin.Category> categories) : base(title)
         {
             _paymentTypes = paymentTypes;
             _categories = categories;

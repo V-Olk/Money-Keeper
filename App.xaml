@@ -2,10 +2,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Money_Keeper"
-             xmlns:card="clr-namespace:VOlkin.Dialogs.Card"
+             xmlns:cardDialog="clr-namespace:VOlkin.Dialogs.CardDialog"
              xmlns:readTwoDates="clr-namespace:VOlkin.Dialogs.ReadTwoDates"
              xmlns:addTransaction="clr-namespace:VOlkin.Dialogs.AddTransaction"
-             xmlns:addCategory="clr-namespace:VOlkin.Dialogs.AddCategory"
+             xmlns:categoryDialog="clr-namespace:VOlkin.Dialogs.CategoryDialog"
              xmlns:mainInfoViewModel="clr-namespace:VOlkin.ViewModels"
              xmlns:views="clr-namespace:VOlkin.Views"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -28,8 +28,8 @@
 
             </ResourceDictionary.MergedDictionaries>
 
-            <DataTemplate DataType="{x:Type card:CardDialogViewModel}">
-                <card:CardView/>
+            <DataTemplate DataType="{x:Type cardDialog:CardDialogViewModel}">
+                <cardDialog:CardView/>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type readTwoDates:ReadTwoDatesViewModel}">
@@ -40,8 +40,8 @@
                 <addTransaction:AddTransactionView/>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type addCategory:AddCategoryDialogVM}">
-                <addCategory:AddCategoryView/>
+            <DataTemplate DataType="{x:Type categoryDialog:CategoryDialogVM}">
+                <categoryDialog:CategoryDialogView/>
             </DataTemplate>
 
         </ResourceDictionary>
