@@ -18,7 +18,7 @@ using VOlkin.Dialogs.ReadTwoDates;
 using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
 using VOlkin.Dialogs.QuestionDialog;
-using VOlkin.Dialogs.AddTransaction;
+using VOlkin.Dialogs.TransactionDialog;
 using System.Collections.Specialized;
 using VOlkin.Dialogs.CategoryDialog;
 using VOlkin.HelpClasses.Enums;
@@ -67,7 +67,7 @@ namespace VOlkin.ViewModels
         }
 
         public ObservableCollection<PaymentType> PaymentTypes { get; set; } = DbContext.PaymentTypes.Local;
-        public ObservableCollection<Category> Categories { get; set; } = DbContext.Categories.Local;
+        public static ObservableCollection<Category> Categories { get; set; } = DbContext.Categories.Local;
         public ObservableCollection<Transaction> Transactions { get; set; } = DbContext.Transactions.Local;
 
         public ObservableCollection<ChangeTimePeriod> TimePeriods { get; set; } = new ObservableCollection<ChangeTimePeriod>()
@@ -106,7 +106,7 @@ namespace VOlkin.ViewModels
 
         public RelayCommand<PaymentType> UpdateCardCommand => _updateCardCommand ??= new(UpdateCard);
         public RelayCommand<Category> UpdateCategoryCommand => _updateCategoryCommand ??= new(UpdateCategory);
-        public RelayCommand<Transaction> UpdateTransactionCommand => _updateTransactionCommand ??= new(null);
+        public RelayCommand<Transaction> UpdateTransactionCommand => _updateTransactionCommand ??= new(UpdateTransaction);
 
 
         #region ChangeTimePeriodMethods
@@ -149,38 +149,21 @@ namespace VOlkin.ViewModels
                                                                      .AsEnumerable()
                                                                      .Select(ct => (ct.TransactionObjectName, ct.CategoryType))
                                                                      .ToHashSet()),
-                                                                   out Category addCategoryDialogRes))
+                                                                   out Category newCategory))
                 return;
 
-            DbContext.Categories.Add(addCategoryDialogRes);
+            DbContext.Categories.Add(newCategory);
             DbContext.SaveChanges();
         }
 
         private void AddTransaction()
         {
-            if (!DialogService.OpenInputDialog(new AddTransactionViewModel("Добавление новой транзакции", PaymentTypes, Categories), out Transaction dialogRes))
+            if (!DialogService.OpenInputDialog(new TransactionDialogVM("Добавление новой транзакции", PaymentTypes, Categories), out Transaction newTransaction))
                 return;
 
-            DbContext.Transactions.Add(dialogRes);
+            DbContext.Transactions.Add(newTransaction);
 
-            switch (dialogRes.TransactionType)
-            {
-                case TransactionTypeEnum.Expense:
-                    (dialogRes.SourceFk as PaymentType)?.Decrease(dialogRes.Price);
-                    break;
-
-                case TransactionTypeEnum.Income:
-                    (dialogRes.DestinationFk as PaymentType)?.Increase(dialogRes.Price);
-                    break;
-
-                case TransactionTypeEnum.Transfer:
-                    (dialogRes.SourceFk as PaymentType)?.Decrease(dialogRes.Price);
-                    (dialogRes.DestinationFk as PaymentType)?.Increase(dialogRes.Price);
-                    break;
-
-                default:
-                    break;
-            }
+            newTransaction.Apply();
 
             DbContext.SaveChanges();
 
@@ -253,11 +236,11 @@ namespace VOlkin.ViewModels
             if ((bool)result == false)
                 return;
 
+            transaction.RollBack();
+
             DbContext.Entry(transaction).State = EntityState.Deleted;
             DbContext.SaveChanges();
         }
-
-
 
         private void UpdateCard(PaymentType existingPaymentType)
         {
@@ -290,6 +273,29 @@ namespace VOlkin.ViewModels
                 return;
 
             DbContext.SaveChanges();
+
+            OnPropertyChanged("TotalMoney");
+        }
+
+        private void UpdateTransaction(Transaction existingTransaction)
+        {
+            Transaction backUpExTr = (Transaction)existingTransaction.Clone();
+
+            if (!DialogService.OpenDialog(new TransactionDialogVM("Редактирование транзакции", PaymentTypes, Categories, existingTransaction)))
+                return;
+
+            if (backUpExTr.SourceFk != existingTransaction.SourceFk
+             || backUpExTr.DestinationFk != existingTransaction.DestinationFk
+             || backUpExTr.Price != existingTransaction.Price)
+            {
+                backUpExTr.RollBack();
+
+                existingTransaction.Apply();
+            }
+
+            DbContext.SaveChanges();
+
+            LoadTransactions();
 
             OnPropertyChanged("TotalMoney");
         }

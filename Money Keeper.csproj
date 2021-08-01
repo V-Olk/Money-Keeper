@@ -103,10 +103,10 @@
       <DependentUpon>CategoryDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\CategoryDialog\CategoryDialogVM.cs" />
-    <Compile Include="Dialogs\AddTransaction\AddTransactionView.xaml.cs">
-      <DependentUpon>AddTransactionView.xaml</DependentUpon>
+    <Compile Include="Dialogs\TransactionDialog\TransactionDialogView.xaml.cs">
+      <DependentUpon>TransactionDialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\AddTransaction\AddTransactionViewModel.cs" />
+    <Compile Include="Dialogs\TransactionDialog\TransactionDialogVM.cs" />
     <Compile Include="Dialogs\QuestionDialog\QuestionDialogView.xaml.cs">
       <DependentUpon>QuestionDialogView.xaml</DependentUpon>
     </Compile>
@@ -141,7 +141,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialogs\AddTransaction\AddTransactionView.xaml">
+    <Page Include="Dialogs\TransactionDialog\TransactionDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

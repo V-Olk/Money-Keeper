@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="VOlkin.Dialogs.AddTransaction.AddTransactionView"
+﻿<UserControl x:Class="VOlkin.Dialogs.TransactionDialog.TransactionDialogView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VOlkin.Dialogs.AddTransaction"
+             xmlns:local="clr-namespace:VOlkin.Dialogs.TransactionDialog"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:enums="clr-namespace:VOlkin.HelpClasses.Enums"
              xmlns:help="clr-namespace:VOlkin.HelpClasses" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
@@ -26,7 +26,15 @@
         </Style>
 
     </UserControl.Resources>
-    
+
+    <UserControl.InputBindings>
+        <KeyBinding Command="{Binding OkEnterCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                    Key="Return"/>
+
+
+    </UserControl.InputBindings>
+
     <StackPanel Margin="20">
         
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -35,6 +43,7 @@
                       VerticalAlignment="Center"
                       ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
                       SelectedItem="{Binding CurrentTransactionType}"
+                      IsEnabled="{Binding TransactionTypeComboBoxIsEnabled}"
                       Margin="0 0 0 0">
 
                 <ComboBox.ItemTemplate>

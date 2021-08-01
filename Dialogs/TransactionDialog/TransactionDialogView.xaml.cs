@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace VOlkin.Dialogs.AddTransaction
+namespace VOlkin.Dialogs.TransactionDialog
 {
     /// <summary>
-    /// Interaction logic for AddTransactionView.xaml
+    /// Interaction logic for TransactionDialogView.xaml
     /// </summary>
-    public partial class AddTransactionView : UserControl
+    public partial class TransactionDialogView : UserControl
     {
-        public AddTransactionView()
+        public TransactionDialogView()
         {
             InitializeComponent();
         }

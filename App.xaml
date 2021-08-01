@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:Money_Keeper"
              xmlns:cardDialog="clr-namespace:VOlkin.Dialogs.CardDialog"
              xmlns:readTwoDates="clr-namespace:VOlkin.Dialogs.ReadTwoDates"
-             xmlns:addTransaction="clr-namespace:VOlkin.Dialogs.AddTransaction"
+             xmlns:transactionDialog="clr-namespace:VOlkin.Dialogs.TransactionDialog"
              xmlns:categoryDialog="clr-namespace:VOlkin.Dialogs.CategoryDialog"
              xmlns:mainInfoViewModel="clr-namespace:VOlkin.ViewModels"
              xmlns:views="clr-namespace:VOlkin.Views"
@@ -36,8 +36,8 @@
                 <readTwoDates:ReadTwoDatesView/>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type addTransaction:AddTransactionViewModel}">
-                <addTransaction:AddTransactionView/>
+            <DataTemplate DataType="{x:Type transactionDialog:TransactionDialogVM}">
+                <transactionDialog:TransactionDialogView/>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type categoryDialog:CategoryDialogVM}">
