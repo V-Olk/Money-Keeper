@@ -43,7 +43,9 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="{Binding TransactionObjectName}" Grid.Column="0"/>
-                
+
+                <TextBlock Text="{Binding CategoryType, Converter={StaticResource EnumConverter}}" Grid.Column="3"/>
+
             </Grid>
             
         </DataTemplate>
@@ -83,8 +85,8 @@
                     
                 </Expander.Header>
 
-                <ListBox x:Name="PaymenTypesListBox"
-                         ItemsSource="{Binding PaymentTypes}"
+                <ListView x:Name="PaymenTypesListBox"
+                         ItemsSource="{Binding FilteredPaymentTypes}"
                          ItemTemplate="{StaticResource PaymentTypesTemplate}"
                          Template="{StaticResource NoScroll}">
 
@@ -99,7 +101,7 @@
                         
                     </i:Interaction.Triggers>
 
-                    <ListBox.ContextMenu>
+                    <ListView.ContextMenu>
                         
                         <ContextMenu>
 
@@ -135,8 +137,8 @@
                             
                         </ContextMenu>
                         
-                    </ListBox.ContextMenu>
-                </ListBox>
+                    </ListView.ContextMenu>
+                </ListView>
 
             </Expander>
             <!--EndRegion-->
@@ -163,7 +165,7 @@
                 </Expander.Header>
 
                 <ListView x:Name="CategoriesListView"
-                         ItemsSource="{Binding Categories}"
+                         ItemsSource="{Binding FilteredCategories}"
                          ItemTemplate="{StaticResource CategoriesTemplate}"
                          Template="{StaticResource NoScroll}"
                          Margin="0 0 0 0">
@@ -261,7 +263,7 @@
             </Grid>
 
             <ListView x:Name="TransactionsListView"
-                      ItemsSource="{Binding Transactions}"
+                      ItemsSource="{Binding FilteredTransactions}"
                       Margin="0 10 0 0"
                       help:GridViewSort.AutoSort="True">
 
@@ -280,7 +282,6 @@
                     </Style>
                     
                 </ListView.ItemContainerStyle>
-
 
                 <i:Interaction.Triggers>
 

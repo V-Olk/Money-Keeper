@@ -1,28 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using VOlkin.Dialogs.CardDialog;
 using VOlkin.Dialogs.Service;
 using ExtensionMethods;
 using VOlkin.HelpClasses;
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
 using VOlkin.Dialogs.ReadTwoDates;
-using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
 using VOlkin.Dialogs.QuestionDialog;
 using VOlkin.Dialogs.TransactionDialog;
-using System.Collections.Specialized;
 using VOlkin.Dialogs.CategoryDialog;
 using VOlkin.HelpClasses.Enums;
 using VOlkin.Models;
+using System.Windows.Data;
 
 namespace VOlkin.ViewModels
 {
@@ -50,6 +42,7 @@ namespace VOlkin.ViewModels
             DbContext.Categories.Where(ct => ct.State == StatesEnum.Active).Load();
 
             PaymentTypes.CollectionChanged += (s, e) => { OnPropertyChanged("TotalMoney"); };
+            Transactions.CollectionChanged += (s, e) => { OnPropertyChanged("TotalMoney"); };
 
             SetCurTimePeriod = TimePeriods.FirstOrDefault();
         }
@@ -58,17 +51,41 @@ namespace VOlkin.ViewModels
         public static DateTime StartDate { get; set; }
         public static DateTime EndDate { get; set; } = DateTime.MaxValue;
 
-        public decimal TotalMoney
+        public decimal TotalMoney => PaymentTypes?.Where(pt => pt.State == StatesEnum.Active).Sum(pt => pt.MoneyAmount) ?? 0;
+
+        public ObservableCollection<Category> Categories { get; set; } = DbContext.Categories.Local;
+        public ObservableCollection<PaymentType> PaymentTypes { get; set; } = DbContext.PaymentTypes.Local;
+        public ObservableCollection<Transaction> Transactions { get; set; } = DbContext.Transactions.Local;
+
+        public ICollectionView FilteredPaymentTypes
         {
             get
             {
-                return PaymentTypes?.Sum(pt => pt.MoneyAmount) ?? 0;
+                ICollectionView source = CollectionViewSource.GetDefaultView(PaymentTypes);
+                source.Filter = paymentType => FilterPaymentType((PaymentType)paymentType);
+                return source;
             }
         }
 
-        public ObservableCollection<PaymentType> PaymentTypes { get; set; } = DbContext.PaymentTypes.Local;
-        public static ObservableCollection<Category> Categories { get; set; } = DbContext.Categories.Local;
-        public ObservableCollection<Transaction> Transactions { get; set; } = DbContext.Transactions.Local;
+        public ICollectionView FilteredCategories
+        {
+            get
+            {
+                ICollectionView source = CollectionViewSource.GetDefaultView(Categories);
+                source.Filter = category => FilterCategory((Category)category);
+                return source;
+            }
+        }
+
+        public ICollectionView FilteredTransactions
+        {
+            get
+            {
+                ICollectionView source = CollectionViewSource.GetDefaultView(Transactions);
+                source.Filter = tr => FilterTransaction((Transaction)tr);
+                return source;
+            }
+        }
 
         public ObservableCollection<ChangeTimePeriod> TimePeriods { get; set; } = new ObservableCollection<ChangeTimePeriod>()
         {
@@ -158,7 +175,10 @@ namespace VOlkin.ViewModels
 
         private void AddTransaction()
         {
-            if (!DialogService.OpenInputDialog(new TransactionDialogVM("Добавление новой транзакции", PaymentTypes, Categories), out Transaction newTransaction))
+            if (!DialogService.OpenInputDialog(new TransactionDialogVM("Добавление новой транзакции",
+                                               new ObservableCollection<PaymentType>(PaymentTypes.Where(pt => pt.State == StatesEnum.Active)),
+                                               new ObservableCollection<Category>(Categories.Where(ct => ct.State == StatesEnum.Active))),
+                                               out Transaction newTransaction))
                 return;
 
             DbContext.Transactions.Add(newTransaction);
@@ -168,32 +188,24 @@ namespace VOlkin.ViewModels
             DbContext.SaveChanges();
 
             LoadTransactions();
-
-            OnPropertyChanged("TotalMoney");
         }
 
         private void LoadTransactions()
         {
-            DbContext.Transactions.Local.ToList().ForEach(x =>
-            {
-                DbContext.Entry(x).State = EntityState.Detached;
-                x = null;
-            });
-
             DbContext.Transactions
                         .Where(tr => tr.DateTime > StartDate && tr.DateTime <= EndDate)
                         .Include(tr => tr.SourceFk)
                         .Include(tr => tr.DestinationFk)
-                        .OrderByDescending(tr => tr.DateTime).Load();
+                        .Load();
 
-            OnPropertyChanged("Transactions");
+            FilteredTransactions.Refresh();
         }
 
-        private async void CloseStateSupportObj(TransactionObject stateSupportobj)
+        private async void CloseStateSupportObj(TransactionObject transactionObject)
         {
             QuestionDialogView view = new()
             {
-                DataContext = new QuestionDialogViewModel($"Вы действительно хотите закрыть \"{stateSupportobj}\"?{Environment.NewLine}" +
+                DataContext = new QuestionDialogViewModel($"Вы действительно хотите закрыть \"{transactionObject}\"?{Environment.NewLine}" +
                 $"Вы всегда сможете восстановить его в настройках")
             };
 
@@ -201,17 +213,19 @@ namespace VOlkin.ViewModels
             if ((bool)result == false)
                 return;
 
-            stateSupportobj.Close();
+            transactionObject.Close();
             DbContext.SaveChanges();
 
-            DbContext.Entry(stateSupportobj).State = EntityState.Detached;
+            RefreshTransactionObjectView(transactionObject);
+
+            OnPropertyChanged("TotalMoney");
         }
 
-        private async void RemoveStateSupportObj(TransactionObject stateSupportobj)
+        private async void RemoveStateSupportObj(TransactionObject transactionObject)
         {
             QuestionDialogView view = new()
             {
-                DataContext = new QuestionDialogViewModel($"Вы действительно хотите удалить \"{stateSupportobj}\"?{Environment.NewLine}" +
+                DataContext = new QuestionDialogViewModel($"Вы действительно хотите удалить \"{transactionObject}\"?{Environment.NewLine}" +
                 $"Ее нельзя будет восстановить в настройках")
             };
 
@@ -219,10 +233,12 @@ namespace VOlkin.ViewModels
             if ((bool)result == false)
                 return;
 
-            stateSupportobj.Delete();
+            transactionObject.Delete();
             DbContext.SaveChanges();
 
-            DbContext.Entry(stateSupportobj).State = EntityState.Detached;
+            RefreshTransactionObjectView(transactionObject);
+
+            OnPropertyChanged("TotalMoney");
         }
 
         private async void RemoveTransaction(Transaction transaction)
@@ -273,12 +289,13 @@ namespace VOlkin.ViewModels
                 return;
 
             DbContext.SaveChanges();
-
-            OnPropertyChanged("TotalMoney");
         }
 
         private void UpdateTransaction(Transaction existingTransaction)
         {
+            if (existingTransaction == null)//TODO: off doubleClick trigger for ListView header
+                return;
+
             Transaction backUpExTr = (Transaction)existingTransaction.Clone();
 
             if (!DialogService.OpenDialog(new TransactionDialogVM("Редактирование транзакции", PaymentTypes, Categories, existingTransaction)))
@@ -299,6 +316,23 @@ namespace VOlkin.ViewModels
 
             OnPropertyChanged("TotalMoney");
         }
+
+        private bool FilterCategory(Category category) => category.State == StatesEnum.Active;
+        private bool FilterPaymentType(PaymentType paymentType) => paymentType.State == StatesEnum.Active;
+        private bool FilterTransaction(Transaction transaction) => transaction.DateTime > StartDate && transaction.DateTime <= EndDate;
+
+        private void RefreshTransactionObjectView(TransactionObject transactionObject)
+        {
+            if (transactionObject is Category)
+            {
+                FilteredCategories.Refresh();
+            }
+            else if (transactionObject is PaymentType)
+            {
+                FilteredPaymentTypes.Refresh();
+            }
+        }
+
     }
 }
 
