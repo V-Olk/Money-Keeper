@@ -24,7 +24,7 @@ This open source application for the Windows desktop will give you the ability t
 - Checkout the [Super Quick Start](https://github.com/V-Olk/Money-Keeper/wiki/Super-Quick-Start)
 
 - Or, watch the [short video presentation](https://www.youtube.com/) (coming soon)
-- Hit the ⭐ Star ⭐ button to this repo **;**P
+- Hit the ⭐ Star ⭐ button to this repo ;P
 
 # Screenshots:
 
